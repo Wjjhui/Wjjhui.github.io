@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第二章:物理层">
+<meta property="og:url" content="https://wjjhui.github.io/2022/03/01/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%89%A9%E7%90%86%E5%B1%82/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/wuliceng.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%89%A9%E7%90%86%E5%B1%82-16498648709351.png">
+<meta property="article:published_time" content="2022-03-01T12:50:18.000Z">
+<meta property="article:modified_time" content="2022-06-20T01:36:59.439Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/wuliceng.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/03/01/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%89%A9%E7%90%86%E5%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第二章:物理层 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/03/01/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%89%A9%E7%90%86%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第二章:物理层
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-01 20:50:18" itemprop="dateCreated datePublished" datetime="2022-03-01T20:50:18+08:00">2022-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-20 09:36:59" itemprop="dateModified" datetime="2022-06-20T09:36:59+08:00">2022-06-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="通信基础-2-1-上"><a href="#通信基础-2-1-上" class="headerlink" title="通信基础 2.1 上"></a>通信基础 2.1 上</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p> 通信的目的是为了传送信息</p>
+<p> 数据</p>
+<p> 传送信息的实体</p>
+<p> 信息</p>
+<p> 数据的电气表现或者电磁表现，是数据在传输过程中的存在形式</p>
+<p> 码元</p>
+<p> 固定时长的信号波形(数字脉冲)表示以为k进制数字 代表不同离散数值的基本波形</p>
+<p> 这个时长内的信号称为k进制码元</p>
+<p> 信源</p>
+<p> 产生和发送数据的源头</p>
+<p> 信道</p>
+<p> 发送端信源发送的信息经过变换成合适的信号后在信道上传输到信宿</p>
+<p> 信道是信号的传输媒介</p>
+<p> 噪声源是信道上的噪声(对信号的干扰),及分散在通信系统其他各处的噪声的集中表示</p>
+<p> 信宿</p>
+<p> 接受数据的重点</p>
+<p> 传输方式</p>
+<p> 串行传输</p>
+<p> 将表示一个字符的8位二进制数按由低到高的顺序发送</p>
+<p> 速度慢，费用低，适合远距离</p>
+<p> 并行传输</p>
+<p> 将表示一个字符的8位二进制数同时通过8条信道发送</p>
+<p> 用于计算机内部数据传输</p>
+<p> 速度快，费用高，适合近距离</p>
+<p> 通信交互方式</p>
+<p> 单工通道</p>
+<p> 只有一个方向的通信而没有反方向的交互，仅需要一条信道</p>
+<p> 半双工通道</p>
+<p> 通信的双方可以发送或者接受信息，但任何一方不能同时发送和接受，需要两条信道</p>
+<p> 双工通道</p>
+<p> 通信的双方可以同时发送或者接受信息，需要两条信道</p>
+<p> 传输&#x2F;通信方式</p>
+<p> 同步传输</p>
+<p> 数据的传送是以一个数据区块为单位，因此同步传输又称为区块传输</p>
+<p> 在传送数据时，需要先送出1个或者多个同步字符，在送出整批的数据</p>
+<p> 异步传输</p>
+<p> 将比特分成小组进行传送，小组可以是8位的一个字符或者更长，发送方可以在任何时刻发送这些比特组，而接收方不知道他们会在什么时候到达</p>
+<p> 传送数据时，加一个字符起始位和一个字符终值位</p>
+<p> 速率</p>
+<p> 码元传输速率(码元速率，波形速率)： 单位时间内传输的码元个数 单位 B(波特)</p>
+<p> 信息传输速率(信息速率，比特率): 单位时间内传输的二进制码元个数(比特数) 单位 bps(比特每秒) &#x3D;波特log2 码元状态数</p>
+<p> 带宽</p>
+<p> 模拟信号系统中</p>
+<p> 最高频率与最低频率的差值 单位 HZ(赫兹)</p>
+<p> 数字设备中</p>
+<p> 单位时间内网络中”最高速率” 单位 bps(比特&#x2F;秒)</p>
+<h3 id="奈奎斯特定理和香农定理"><a href="#奈奎斯特定理和香农定理" class="headerlink" title="奈奎斯特定理和香农定理"></a>奈奎斯特定理和香农定理</h3><h4 id="nice定理"><a href="#nice定理" class="headerlink" title="nice定理"></a>nice定理</h4><h5 id="R-x3D-2Wlog2-V-单位-bps-比特-x2F-秒"><a href="#R-x3D-2Wlog2-V-单位-bps-比特-x2F-秒" class="headerlink" title="R&#x3D;2Wlog2 V 单位 bps(比特&#x2F;秒)"></a>R&#x3D;2Wlog2 V 单位 bps(比特&#x2F;秒)</h5><p> 理想低通(没有噪声，带宽有限)的信道中，极限码元的传输速率为2W波特</p>
+<p> 结论</p>
+<p> 1.任何信道中，码元的传输速率是有上线的</p>
+<p> 2.信道的带宽越宽，就可以用更高的速率进行码元的有限的传输</p>
+<p> 3.nice准则给出了码元传输速率的限制，没有给出信息传输速率的限制(即没有对一个码元可以对应多少个二进制位给出限制)</p>
+<h4 id="香浓定理"><a href="#香浓定理" class="headerlink" title="香浓定理"></a>香浓定理</h4><p>R&#x3D;Wlog2(1+s&#x2F;N) 单位 bps(比特&#x2F;秒)</p>
+<p> 信噪比&#x3D;10log10 S&#x2F;N</p>
+<p> 结论</p>
+<p> 1.信道的带宽或者信道中信噪比越大 信息的极限传输速率越高</p>
+<p> 2.对一定的传输带宽和一定的信噪比，信息传输速率的上限是确定的</p>
+<p> 3.香农定理得出的是极限信息传输速率，实际信道的传输速率比他低很多</p>
+<h2 id="通信基础-2-1-中"><a href="#通信基础-2-1-中" class="headerlink" title="通信基础 2.1 中"></a>通信基础 2.1 中</h2><h3 id="编码与调制"><a href="#编码与调制" class="headerlink" title="编码与调制"></a>编码与调制</h3><p> 基本概念</p>
+<p> 数字数据</p>
+<p> 数字数据—-数字发送器—&gt;数字信号（编码）</p>
+<p> 数字数据—-调制器———&gt;模拟信号（调制）</p>
+<p> 模拟数据</p>
+<p> 模拟数据—PCM编码器——&gt;数字信号（编码）</p>
+<p> 模拟数据—-放大器调制器—&gt;模拟信号（调制）</p>
+<p> 数字数据编码位数字信号</p>
+<p> 数字数据编码用于基带传输中，在不改变数字信号的频率的情况下，直接传输数字信号</p>
+<p> 非归零编码</p>
+<p> 高电平代表1.低电平带代表0(或者相反)</p>
+<p> 优点：容易实现</p>
+<p> 缺点：无法使得双方同步，没有检错功能</p>
+<p> 归零编码</p>
+<p> 高电平代表1.低电平带代表0(或者相反)，每个时钟周期的中间跳变(跳变提供同步机制)</p>
+<p> 优点：提供同步机制</p>
+<p> 缺点：归零需要占用一部分带宽，所有传输速率受到一定限制</p>
+<p> 曼彻斯特编码</p>
+<p> 将一个码元分为两个相等的间隔，前高后低为1，前低后高为0(或者相反)</p>
+<p> 优点：提供同步机制</p>
+<p> 缺点：占用的频带带宽为原始基带的两倍 ，因此传输效率为50%</p>
+<p> 以太网使用的编码为曼彻斯特编码</p>
+<p> 差分曼彻斯特编码</p>
+<p> 若码元为1，前半个码元的电平与上一个码元的后半个电平相同，若码元为0则相反</p>
+<p> 优点：可以实现自同步，抗干扰性号</p>
+<p> 主要使用在局域网</p>
+<p> 4B&#x2F;5B编码</p>
+<p> 将发送的数据流每4位作为一组，然后按照4B&#x2F;5B编码规则将其转换为相应的5位码</p>
+<p> 5位码共有32中组合，但是只用其中的16种代表4位码，其他的16位作为控制码（帧的开始和借宿，线路的状态等等）</p>
+<p> 传输效率只有80%</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/wuliceng.png" alt="wuliceng"></p>
+<p> 数字数据调制为模拟信号</p>
+<p> 幅移键控（ASK）</p>
+<p> 通过改变载波信号的振幅来表示数字信号1和0，载波的频率和相位不发生变化</p>
+<p> 比较容易实现，抗干扰能力强</p>
+<p> 频移键控（FSK）</p>
+<p> 通过改变载波信号的振幅来表示数字信号1和0，载波的频率和相位不发生改变</p>
+<p> 容易实现，抗干扰能力强，应用广泛</p>
+<p> 相移键控（PSK）</p>
+<p> 通过改变载波信号的振幅来表示数字信号1和0，载波的频率和相位不发生改变</p>
+<p> 氛围绝对调相和相对调相</p>
+<p> 正交振幅调制（QAM）</p>
+<p> 频率相同的前提下，将ASK和PSK结合起来，形成叠加信号</p>
+<p> 设波特频率为B，采用m个相位，每个相位有n种振幅，传输率R&#x3D;Blog2(mn)</p>
+<p> 模拟数据编码为数字信号（PCM）</p>
+<p> 采样</p>
+<p> 对模拟信号进行周期性扫描，把时间上连续的信号变成时间上离散的信号</p>
+<p> 采样频率&gt;&#x3D;2W W为频带带宽</p>
+<p> 量化</p>
+<p> 把采样取得的电平幅值按照一定的分级标度，转化为对应的数字值并取整数</p>
+<p> 这样就把连续的电平幅值转换为离散的数字量</p>
+<p> 采样和量化的实质就是分割和转换</p>
+<p> 编码</p>
+<p> 把量化的结果转化为与之对应的二进制编码</p>
+<p> 模拟数据调制为模拟信号</p>
+<p> 需要较高的频率</p>
+<p> 使用频分复用（FDM）技术，充分利用带宽资源</p>
+<p> 电话局和本地局交换机采用的编码方式</p>
+<p> 模式的声音数据是加载到模拟的载波信号中传输的</p>
+<h2 id="通信基础2-1-下"><a href="#通信基础2-1-下" class="headerlink" title="通信基础2.1 下"></a>通信基础2.1 下</h2><h3 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h3><p> 数据传输钱，先建立一条专用（双方独占）的物理通信路径</p>
+<p> 直通方式传输数据</p>
+<p> 电路交换的三个阶段</p>
+<p> 连接建立</p>
+<p> 数据传输</p>
+<p> 连接释放</p>
+<p> 优点</p>
+<p> 通信时延小：通信线路双方专用，传输时延非常小</p>
+<p> 有序传输：双方通信按发送顺序发送数据，不存在失序问题</p>
+<p> 没有冲突：不同的通信双方有着不同的信道</p>
+<p> 适用范围广：可以传输模拟信号，也可以传输数字信号</p>
+<p> 实时性强：双方的物理通路一旦建立，双方就可以随时通信</p>
+<p> 控制简单：电路交换的交换设备（交换机等）及控制均比较简单</p>
+<p> 缺点</p>
+<p> 建立连接时间长：电路交换的平均连接建立时间对计算机通信来说时间较长</p>
+<p> 线路独占：使用效率低，只能供通信双方使用</p>
+<p> 灵活性差：只要通信双方的任何一点出现故障，就必须重新建立连接</p>
+<p> 难以规格化：数据的不同类型，不同规格，不用速率的终端很难相互进行通信</p>
+<p> 无数据存储能力，难以平滑通信</p>
+<h3 id="报文交换"><a href="#报文交换" class="headerlink" title="报文交换"></a>报文交换</h3><p> 数据交换的单位是报文，报文携带有目的地址，源地址等信息</p>
+<p> 报文交换的时候使用存储转发方法</p>
+<p> 优点</p>
+<p> 无需建立连接</p>
+<p> 不需要建立专用线路，随时可以发送报文，不存在建立时延</p>
+<p> 动态分配线路</p>
+<p> 当发送方把报文交给交换设备时，交换设备先存储整个报文，然后选择一个合适的空闲线路将报文发送出去</p>
+<p> 提高线路的可靠性</p>
+<p> 如果某条线路路径发生故障，那么可重新选择另外一个路径传输数据，因此提高了传输的可靠性</p>
+<p> 提高线路的利用率</p>
+<p> 通信双方不是固定占用一条通信线路，而是在不同的时间一段一段地部分占有 这条物理通道</p>
+<p> 提供多目标服务</p>
+<p> 一个报文可以同时发送多个目的地址</p>
+<p> 缺点</p>
+<p> 数据进入交换节点后要经过存储、转发，所以存在转发时延（包括接受报文、检验正确性、排队、发送时间等）</p>
+<p> 报文交换对报文的大小没有限制，所以网络节点要有较大的缓存时间</p>
+<p> 现在已经很少使用，多使用分组交换方式代替</p>
+<h3 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h3><p> 采用存储转发方式，限制了数据块的大小上限</p>
+<p> 优点</p>
+<p> 无建立时延</p>
+<p> 不需要为通信双方预先建立一条专用的通信道路，不存在连接建立时延，用户可随时发送分组</p>
+<p> 线路利用率高</p>
+<p> 通信双方不是固定占有一条通信线路，而是在不同的时间一段一段地部分占有这条物理通道</p>
+<p> 简化了存储管理</p>
+<p> 因为分组的长度固定。相应的缓冲区的大小也固定，在交换节点中存储器的管理通常被简化为对缓冲区的管理，相对比较容易</p>
+<p> 加速传输</p>
+<p> 分组是逐个传输的，可以使后一个分组的存储操作与前一个分组的转发操作并行，这种流水线方式减少了报文的传输时间</p>
+<p> 传输一个分组所需的缓冲区比传输一一次报文所需的缓冲区小，这样因缓冲区不足而等待发送的概率及时间也会少</p>
+<p> 减少了出错概率和重发数据量</p>
+<p> 分组较短，出错概率减小，重发的数据量也减小，提高了可靠性，也减少了传输时延</p>
+<p> 缺点</p>
+<p> 存在传输时延</p>
+<p> 需要额外的信息量</p>
+<p> 每个分组都需要加上源地址，目的地址和分组编号等信息</p>
+<p> 当分组交换采用数据报服务时，会出现失序，丢失或者重复分组，到达目的地后要对分组进行排序工作</p>
+<p> 无连接的数据报服务</p>
+<p> 网络层提供无连接服务，发送方可随时发送分组</p>
+<p> 每个分组有着完整的目的地址</p>
+<p> 每个分组独立的进行路由选择和转发</p>
+<p> 不保证分组的有序到达</p>
+<p> 不保证可靠通信，可靠性由用户来保证</p>
+<p> 出故障的节点丢失分组，其他分组路径选择不发生变化可以正常传输</p>
+<p> 由用户主机进行流量控制，不保证数据报的可靠性</p>
+<p> 分组在交换节点存储转发时，需要排队等候处理，这回带来一定的时延。当通过交换节点的通信量较大或网络发送堵塞时，这种时延会大大增加，交换节点还会根据情况丢弃部分分组</p>
+<p> 网络具有冗余路径，当某一交换节点或一段链路出现故障时，可相应地更新发表，寻找另一路径转发分组，对故障的适应能力强</p>
+<p> 使用突发性通信，不适于长报文、会话式通信</p>
+<p> 面向连接的虚电路服务</p>
+<p> 必须建立连接</p>
+<p> 仅在建立连接阶段使用，每个分组使用长度较短的虚电路号</p>
+<p> 属于同一条虚电路的分组按照同一个路由出发</p>
+<p> 保证分组的有序到达</p>
+<p> 可靠性由网络保证</p>
+<p> 所有经过故障节点的虚电路都不能正常工作</p>
+<p> 可由分组交换网负责，也可以由用户主机负责</p>
+<h2 id="双绞线、同轴电缆、光纤于无线传输介质"><a href="#双绞线、同轴电缆、光纤于无线传输介质" class="headerlink" title="双绞线、同轴电缆、光纤于无线传输介质"></a>双绞线、同轴电缆、光纤于无线传输介质</h2><h3 id="双绞线"><a href="#双绞线" class="headerlink" title="双绞线"></a>双绞线</h3><p> 简介</p>
+<p> 最常用的古老传输介质，由两根采用一定规则并排绞合的相互绝缘的铜导线组成</p>
+<p> 绞合可以减少对相邻导线的电池干扰</p>
+<p> 屏蔽双绞线（STP）：在双绞线外面加上一个由金属丝编制成的屏蔽层</p>
+<p> 非屏蔽双绞线（UTP）:无屏蔽层</p>
+<p> 优点</p>
+<p> 价格便宜</p>
+<p> 适用范围广</p>
+<p> 使用范围</p>
+<p> 局域网、传统电话网</p>
+<p> 模拟传输和数字传输</p>
+<p> 距离过大</p>
+<p> 模拟传输使用放大器放大衰减的信号</p>
+<p> 数字数传使用中继器将是失真的信号整形</p>
+<h3 id="同轴电缆"><a href="#同轴电缆" class="headerlink" title="同轴电缆"></a>同轴电缆</h3><p> 由内导体、绝缘层、网状编织屏蔽层和塑料外层构成</p>
+<p> 50欧姆同轴电缆</p>
+<p> 传输基带数字信号</p>
+<p> 70欧姆同轴电缆</p>
+<p> 传输宽带信号</p>
+<p> 主要用于有线电视系统</p>
+<p> 优点</p>
+<p> 良好的抗干扰性</p>
+<p> 广泛用于传输较高速率的数据</p>
+<p> 传输距离更远</p>
+<p> 缺点</p>
+<p> 相对于双绞线较贵</p>
+<h3 id="光纤"><a href="#光纤" class="headerlink" title="光纤"></a>光纤</h3><p> 利用光导纤维传递光脉冲</p>
+<p> 利用光的全反射原理在光纤中不断的传输</p>
+<p> 多模光纤</p>
+<p> 从不同角度入射的多束光线在一条光纤中传输</p>
+<p> 单模光纤</p>
+<p> 光纤的直径减小到仅一个光波长度时，光纤就相一根波导那样，可使光线一直向前传播而不会产生多次反射</p>
+<p> 优点</p>
+<p> 1、传输损耗小、中继距离长、对远距离传输特别经济</p>
+<p> 2、抗雷电和电磁干扰性能好</p>
+<p> 3、无串音干扰，保密性好、也不易被窃听或截取数据</p>
+<h3 id="无线传输介质"><a href="#无线传输介质" class="headerlink" title="无线传输介质"></a>无线传输介质</h3><p> 无线电波</p>
+<p> 具有较强的穿透能力，可以传输很长的距离，所以被广泛应用于通信领域</p>
+<p> 使信号向所有方向传播，因此有效距离内的接受设备无需对准某个方向，就可以与无线电波进行通信连接</p>
+<p> 微波、红外线和激光</p>
+<p> 相同点</p>
+<p> 需要发送方和接收方之间存在一条视线通路，有很强的方向性，都沿直线传播，有时统称为视线介质</p>
+<p> 不同点</p>
+<p> 红外通信和激光通信要把传输的信号分别转换为各自的信号格式，即红外光信号和激光信号，再直接在光线中传播</p>
+<p> 微波通信的频率高，频段范围宽，载波频率通常为2-40HZ，因此通信信道容量大</p>
+<p> 微波通信的信号是沿直接传播的，因此在地面的传播距离有限，超过一定距离后就要用中继站来接力</p>
+<p> 卫星通信</p>
+<p> 优点</p>
+<p> 卫星利用地球同步卫星作为中继来转发微波信号，可以克服地面微波通信距离的限制</p>
+<p> 通信容量大、距离远、覆盖广</p>
+<p> 缺点</p>
+<p> 端到端的传播时延长，一般为250-270ms</p>
+<h2 id="物理层设备"><a href="#物理层设备" class="headerlink" title="物理层设备"></a>物理层设备</h2><h3 id="放大器"><a href="#放大器" class="headerlink" title="放大器"></a>放大器</h3><p> 将模拟信号方法再转发出去</p>
+<h3 id="中继器"><a href="#中继器" class="headerlink" title="中继器"></a>中继器</h3><p> 功能：将数字信号整形并放大再转发出去，消除信号的失真和衰减</p>
+<p> 原理：信号再生</p>
+<p> 优点：局域网的环境下扩大网络规模最简单、最廉价的互联设备</p>
+<p> 缺点：</p>
+<p> 不能够连接具有两个不同速率的局域网</p>
+<p> 中继器出现故障，相邻的两个网段都会产生影响</p>
+<p> 限制</p>
+<p> 5-4-3规则</p>
+<p> 5段通信介质，4个中继器，3段可以挂接计算机</p>
+<h3 id="集线器（HUB）"><a href="#集线器（HUB）" class="headerlink" title="集线器（HUB）"></a>集线器（HUB）</h3><p> 功能</p>
+<p> 实质是一个多段口的中继器，也可以对信号进行整形</p>
+<p> 收到信号后，就将信号从其他端口发出</p>
+<p> 如有多端口输入，输出时就会发生冲突，数据无效</p>
+<p> 优点</p>
+<p> 扩大网络的传输范围</p>
+<p> 缺点</p>
+<p> 不能具有定向传送能力</p>
+<p> 只能工作再半双工状态下</p>
+<p>Hub每个端口连接的网络部分是同一个网络的不同网段</p>
+<p> 不能分割冲突域</p>
+<p> 多台主机同时交互时，会使其工作效率降低</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%89%A9%E7%90%86%E5%B1%82-16498648709351.png" alt="物理层"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/03/01/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%89%A9%E7%90%86%E5%B1%82/" title="第二章:物理层">https://wjjhui.github.io/2022/03/01/第二章：物理层/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/12/%E8%AE%A1%E7%BD%91%E4%BE%8B%E9%A2%981/" rel="prev" title="计网例题1">
+      <i class="fa fa-chevron-left"></i> 计网例题1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/10/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" rel="next" title="第三章:数据链路层">
+      第三章:数据链路层 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E5%9F%BA%E7%A1%80-2-1-%E4%B8%8A"><span class="nav-number">1.</span> <span class="nav-text">通信基础 2.1 上</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%88%E5%A5%8E%E6%96%AF%E7%89%B9%E5%AE%9A%E7%90%86%E5%92%8C%E9%A6%99%E5%86%9C%E5%AE%9A%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">奈奎斯特定理和香农定理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nice%E5%AE%9A%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">nice定理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#R-x3D-2Wlog2-V-%E5%8D%95%E4%BD%8D-bps-%E6%AF%94%E7%89%B9-x2F-%E7%A7%92"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">R&#x3D;2Wlog2 V 单位 bps(比特&#x2F;秒)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A6%99%E6%B5%93%E5%AE%9A%E7%90%86"><span class="nav-number">1.2.2.</span> <span class="nav-text">香浓定理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E5%9F%BA%E7%A1%80-2-1-%E4%B8%AD"><span class="nav-number">2.</span> <span class="nav-text">通信基础 2.1 中</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E4%B8%8E%E8%B0%83%E5%88%B6"><span class="nav-number">2.1.</span> <span class="nav-text">编码与调制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E5%9F%BA%E7%A1%802-1-%E4%B8%8B"><span class="nav-number">3.</span> <span class="nav-text">通信基础2.1 下</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">电路交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E4%BA%A4%E6%8D%A2"><span class="nav-number">3.2.</span> <span class="nav-text">报文交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2"><span class="nav-number">3.3.</span> <span class="nav-text">分组交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%BB%9E%E7%BA%BF%E3%80%81%E5%90%8C%E8%BD%B4%E7%94%B5%E7%BC%86%E3%80%81%E5%85%89%E7%BA%A4%E4%BA%8E%E6%97%A0%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8"><span class="nav-number">4.</span> <span class="nav-text">双绞线、同轴电缆、光纤于无线传输介质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E7%BB%9E%E7%BA%BF"><span class="nav-number">4.1.</span> <span class="nav-text">双绞线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E8%BD%B4%E7%94%B5%E7%BC%86"><span class="nav-number">4.2.</span> <span class="nav-text">同轴电缆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E7%BA%A4"><span class="nav-number">4.3.</span> <span class="nav-text">光纤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%BA%BF%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8"><span class="nav-number">4.4.</span> <span class="nav-text">无线传输介质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82%E8%AE%BE%E5%A4%87"><span class="nav-number">5.</span> <span class="nav-text">物理层设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BE%E5%A4%A7%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text">放大器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E7%BB%A7%E5%99%A8"><span class="nav-number">5.2.</span> <span class="nav-text">中继器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8%EF%BC%88HUB%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">集线器（HUB）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第三章:数据链路层">
+<meta property="og:url" content="https://wjjhui.github.io/2022/03/10/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/adasd.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/QQ%E5%9B%BE%E7%89%8720220412194006.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/QQ%E5%9B%BE%E7%89%8720220412195729.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.png">
+<meta property="article:published_time" content="2022-03-10T12:50:18.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:44:00.527Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/adasd.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/03/10/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第三章:数据链路层 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/03/10/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第三章:数据链路层
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-10 20:50:18" itemprop="dateCreated datePublished" datetime="2022-03-10T20:50:18+08:00">2022-03-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:44:00" itemprop="dateModified" datetime="2022-05-15T18:44:00+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>8.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="3-1-数据链路层的功能"><a href="#3-1-数据链路层的功能" class="headerlink" title="3.1 数据链路层的功能"></a>3.1 数据链路层的功能</h2><h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p> 数据链路层在物理层提供服务的基础上向网络层提供服务，其主要作用是对加强物理层传输原始比特率的功能，将物理层提供的可能出错的物理连接改造为逻辑上无差错的数据链路，使之对网络层表现为一条无差错的链路</p>
+<h3 id="1、为网络层提供服务"><a href="#1、为网络层提供服务" class="headerlink" title="1、为网络层提供服务"></a>1、为网络层提供服务</h3><p> 无确认的无连接服务</p>
+<p> 特点</p>
+<p> 原机器发送数据帧时不需要先建立链路连接，目的机器收到数据帧时不需发回确认</p>
+<p> 对丢失的帧，数据链路层不负责重发而交给上层</p>
+<p> 使用范围</p>
+<p> 适用于实时通信或误码率较低的通信信道（以太网）</p>
+<p> 有确认的连接服务</p>
+<p> 特点</p>
+<p> 源机器发送数据帧时不需先建立连接，但目的机器收到数据时必须发回确认</p>
+<p> 源机器在所规定的时间内未收到确定信号时，就重传丢失的帧，以提高传输的可靠性</p>
+<p> 使用范围</p>
+<p> 适用于误码率较高的通信信道（无线通信）</p>
+<p> 有确认的面向连接的服务</p>
+<p> 特点</p>
+<p> 帧传输过程分为三个过程：建立数据链路、传输帧、释放数据链路</p>
+<p> 目的机器对收到的每一帧都要给出确认，源机器收到确认后才能发送下一个帧</p>
+<p> 使用范围</p>
+<p> 适用于通信要求（可靠性、实时性）较高的场合</p>
+<h3 id="2、链路管理"><a href="#2、链路管理" class="headerlink" title="2、链路管理"></a>2、链路管理</h3><p> 概述</p>
+<p> 数据链路层连接的建立、维持和释放过程称为链路管理，它主要用于面向连接的服务</p>
+<p> 实现过程</p>
+<p> 首先确认对方已处于就绪状态</p>
+<p> 交换一些必要的信息以对帧序号初始化</p>
+<p> 建立连接，在传输过程中则要能维持连接，而在传输完毕后要释放连接</p>
+<h3 id="3、帧定界、帧同步与透明传输"><a href="#3、帧定界、帧同步与透明传输" class="headerlink" title="3、帧定界、帧同步与透明传输"></a>3、帧定界、帧同步与透明传输</h3><p> 概述</p>
+<p> 两个工作站之间传输信息时，必须将网络层的分组封装成帧，以帧的格式进行传送</p>
+<p> 帧定界</p>
+<p> 讲一段数据的前后分别添加首部和尾部就构成了帧。首部和尾部有很多控制信息，起作用是确定帧的界限</p>
+<p> 帧同步</p>
+<p> 接收方能从接受到的二进制比特流中区分出帧的起始于终止</p>
+<p> 透明传输</p>
+<p> 采取有效的措施解决误认为”传输结束”而丢弃后面的数据问题</p>
+<h3 id="4、流量控制"><a href="#4、流量控制" class="headerlink" title="4、流量控制"></a>4、流量控制</h3><p> 概述</p>
+<p> 收发双方各自的工作速率和缓存空间的差异，出现发送方的发送能力大于接收方的接受能力的现象，</p>
+<p> 实现</p>
+<p> 通过控制发送方的发送速度，从而实现流量控制</p>
+<h3 id="5、差错控制"><a href="#5、差错控制" class="headerlink" title="5、差错控制"></a>5、差错控制</h3><p> 使发送方确定接受方是否正确收到由其发送的数据的方法</p>
+<p> 位错：数据中的某些位出现错误</p>
+<p> 帧错：帧的丢失、重复或失序等等</p>
+<h2 id="3-2-组帧"><a href="#3-2-组帧" class="headerlink" title="3.2 组帧"></a>3.2 组帧</h2><h3 id="功能实现"><a href="#功能实现" class="headerlink" title="功能实现"></a>功能实现</h3><p> 为了使接收方能正确地接受并检查所传输的帧，发送方必须依据一定的规则把网络递交的分组封装成帧</p>
+<p> 解决问题</p>
+<p> 帧定界</p>
+<p> 帧同步</p>
+<p> 透明传输</p>
+<h3 id="1、字符计数法"><a href="#1、字符计数法" class="headerlink" title="1、字符计数法"></a>1、字符计数法</h3><p> 实现方法</p>
+<p> 在帧头部使用一个计数字段来表明帧内字符数</p>
+<p> 缺点</p>
+<p> 如果计数段出错，接受双方将失去同步而导致错误</p>
+<h3 id="2、字符填充的首位界定法"><a href="#2、字符填充的首位界定法" class="headerlink" title="2、字符填充的首位界定法"></a>2、字符填充的首位界定法</h3><p> 实现方法</p>
+<p> 使用一些特定的字符来定界一帧的开始与借宿</p>
+<p> 在特殊字符前面填充一个转移字符，防止转义字符被误判为帧的首尾界定符</p>
+<h3 id="3、零比特跳虫的首位标志法"><a href="#3、零比特跳虫的首位标志法" class="headerlink" title="3、零比特跳虫的首位标志法"></a>3、零比特跳虫的首位标志法</h3><p> 实现方法</p>
+<p> 使用一个特定的比特模式，即01111110来标志一帧的开始和结束</p>
+<p> 在发送信息时，遇到5个连续的1就自动在后面加0</p>
+<p> 当收到信息时，遇到5个连续的1就自动在后面减0</p>
+<p> 优点</p>
+<p> 零比特填充法很容易由硬件来实现，性能优于字符填充法</p>
+<h3 id="4、违规编码法"><a href="#4、违规编码法" class="headerlink" title="4、违规编码法"></a>4、违规编码法</h3><p> 使用条件</p>
+<p> 在物理层进行比特编码时，通常采用违规编码</p>
+<p> 违规编码法只适用于采用冗余编码的特殊编码环境</p>
+<p> 实现方法</p>
+<p> 正常情况下：曼彻斯特编码中比特”1”编码成”高-低”电平</p>
+<p> 违规编码：曼彻斯特编码中比特”1”编码成”高-高”电平</p>
+<p> 具体事例</p>
+<p> 局域网 IEEE802标准</p>
+<h3 id="目前最常的组帧方式是比特填充法和违规编码法"><a href="#目前最常的组帧方式是比特填充法和违规编码法" class="headerlink" title="目前最常的组帧方式是比特填充法和违规编码法"></a>目前最常的组帧方式是比特填充法和违规编码法</h3><h2 id="3-3-差错控制"><a href="#3-3-差错控制" class="headerlink" title="3.3 差错控制"></a>3.3 差错控制</h2><h3 id="概要-1"><a href="#概要-1" class="headerlink" title="概要"></a>概要</h3><p> 影响因素：信道固有干扰</p>
+<p> 解决方法：提高信噪比</p>
+<p> 但是外界的冲击噪声是产生差多的的重要原因</p>
+<p> 没有办法提高信号幅度来降低干扰</p>
+<h3 id="利用编码技术进行差错控制"><a href="#利用编码技术进行差错控制" class="headerlink" title="利用编码技术进行差错控制"></a>利用编码技术进行差错控制</h3><p> 自动重传请求ARQ</p>
+<p> 接收端检测出差错时，就设法通知发送端重发，知道接受到正确的码为止</p>
+<p> 前向纠错FFC</p>
+<p> 接收端不但能发现差错，而且能确定比特串的错误位置，从而加以纠正</p>
+<h3 id="检错编码"><a href="#检错编码" class="headerlink" title="检错编码"></a>检错编码</h3><p> 奇偶校验码</p>
+<p>n-1位的数据和1位校验码组成，只能校验奇数位的出错情况，但并不知道哪位错了</p>
+<p> 循环冗余码</p>
+<p> 任何一个由二进制数位串组成的代码都可以与一个只含有0或1的多项式建立–对应的关系</p>
+<p> 计算步骤</p>
+<p> 假设一个帧G(x)有m位，其对应的多项式位M（x）</p>
+<p> 加0：在帧的低段位加上M（x）-1位个的0</p>
+<p> 模2除：G（x）&#x2F;M（x）利用得到的余数位冗余码r</p>
+<p> 判断：（m+r）&#x2F;M（x）&#x3D;&#x3D;0</p>
+<h3 id="纠错编码"><a href="#纠错编码" class="headerlink" title="纠错编码"></a>纠错编码</h3><p> 海明码</p>
+<p> 原理</p>
+<p> 在有效信息位中加入几个校验位形成海明码，并把海明码的每个二进制位分到几个奇偶校验组中</p>
+<p> 当某一位出错后，就会引起有关的几个校验位的值发生变化，这不但可以发现错位，而且能指出错位的位置</p>
+<p> 计算过程</p>
+<p> 检错d位 需要d+1位</p>
+<p> 纠错d位 需要2d+1位</p>
+<p> 设n为有效信息的位数，k为校验位的位数，则信息位n和校验位k满足</p>
+<p> 确定校验位的分步 校验位的分布位2**i-1位</p>
+<p> 校验位取值 校验位的值位对应组的所有位求异或</p>
+<h2 id="3-4流量控制和可靠传输机制"><a href="#3-4流量控制和可靠传输机制" class="headerlink" title="3.4流量控制和可靠传输机制"></a>3.4流量控制和可靠传输机制</h2><h3 id="流量控制、可靠传输与滑动窗口机制"><a href="#流量控制、可靠传输与滑动窗口机制" class="headerlink" title="流量控制、可靠传输与滑动窗口机制"></a>流量控制、可靠传输与滑动窗口机制</h3><p> 流量控制涉及对链路上的帧的发送速率的控制，以使接受方有足够的缓冲空间来接受每个帧</p>
+<p> 停止-等待流量控制</p>
+<p> 基本原理每次只允许发送一帧，然后就陷入等待接收方确认的信息的过程中，因而传输效率低</p>
+<p> 如果接收方不反馈应答信号，那么发送方就一直等待</p>
+<p> 发送窗口&#x3D;1，接受窗口&#x3D;1</p>
+<p> 滑动窗口流量控制</p>
+<p> 基本原理</p>
+<p> 发送方都维持一组连续的允许发送的帧的序号，称为发送窗口</p>
+<p> 接受也维持一组连续的允许接受帧的序号，称为接收窗口</p>
+<p> 发送方：发送窗口的发小代表还未收到对方确认信息的情况下最多可发送多少个数据帧</p>
+<p> 接受方：接受窗口是为了控制可以接受哪些数据帧和不可以接受哪些数据帧</p>
+<p> 机制特点</p>
+<p> 只要接受窗口向前滑动时，发送窗口才有可能向前滑动</p>
+<p> 接受窗口的大小为1时，可保证帧的有序接收</p>
+<p> 数据链路层的滑动窗口协议中，窗口的大小在传输过程是固定的</p>
+<p> 可靠传输机制</p>
+<p> 通常使用确认和超时重传两种机制</p>
+<p> 基本概念</p>
+<p> 确认帧：是一种无数据的控制帧，这种控制帧使得接收方可以让发送方知道哪些内容被正确接受</p>
+<p> 捎待确认：为了提高传输效率，讲确认捎带在一个回复帧中</p>
+<p> 超时重传：发送方在发送某个数据帧后就开启了一个计时器，一定时间内如果没有得到发送的数据的确认帧就重新发送改数据帧，知道发送成功位置</p>
+<p> 自动重传请求：接收方请求发送方重传出错的数据帧来恢复出错的帧，是通信中用于处理信道所带来差错的方法</p>
+<p>停止-等待</p>
+<p>后退N帧</p>
+<p>选择性重传</p>
+<h3 id="停止-等待协议"><a href="#停止-等待协议" class="headerlink" title="停止-等待协议"></a>停止-等待协议</h3><p> 从滑动窗口机制的角度看，停止-等待协议相当于发送窗口和接受窗口大小均为1的滑动窗口</p>
+<p> 在停止-等待协议中，除了数据帧丢失外，还有其他两种差错</p>
+<p> 达到目的站的帧可能已经损坏</p>
+<p> 数据帧正确而确认帧损坏</p>
+<p> 帧缓冲区</p>
+<p> 目的：为了超时重发和判定重复帧的需要</p>
+<p> 实现方法：发送段在发送完数据帧时，必须在其发送缓存中保留次数据的副本，直到收到确认帧才删除副本</p>
+<h3 id="后退N帧协议（GBN）"><a href="#后退N帧协议（GBN）" class="headerlink" title="后退N帧协议（GBN）"></a>后退N帧协议（GBN）</h3><p> 后退N帧式ARQ</p>
+<p>​         发送方持续发送帧，当接收方检测失序的信息帧后，要求重发最后一个正确接受的信息帧之后的所有未被确认的帧（累积确认）</p>
+<p>​         窗口大小</p>
+<p>​        n比特编码</p>
+<p>GBN协议重点总结</p>
+<p>​         累计确认</p>
+<pre><code>     接收方只按顺序接收帧，不按序无情丢弃
+</code></pre>
+<p>​         确认序列号最大的、按序到达的帧</p>
+<p>​         发送窗口最大为1&#x3D;<code>&lt;w&lt;=2**n - 1&gt;</code>{&#x3D;html}</p>
+<h3 id="选择性重传协议（SR）"><a href="#选择性重传协议（SR）" class="headerlink" title="选择性重传协议（SR）"></a>选择性重传协议（SR）</h3><p> 选择重传</p>
+<p> 每个发送缓冲区对应一个计时器，当计时器超时时，缓冲区的帧就会重传</p>
+<p> 一旦接收方怀疑帧出错，就会发一个否定帧NAK给发送方，要求发送对NAK中指定的帧进行重传</p>
+<p> 接收端要设置具有相当容量的缓冲区来暂存那么为按序正确收到的帧</p>
+<p> 优点：提高了信道的利用率</p>
+<p> 缺点：需要开辟缓存空间来存储数据</p>
+<p> 窗口大小</p>
+<p>n比特编码</p>
+<p> 发送窗口最好等于接收窗口</p>
+<p> 1&lt;&#x3D;W&lt;&#x3D;2**(n-1)</p>
+<h2 id="3-5介质访问控制"><a href="#3-5介质访问控制" class="headerlink" title="3.5介质访问控制"></a>3.5介质访问控制</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p> 主要任务：为使用介质的每个节点隔离来自同一信道上其他节点所传送的信号，以协调活动节点的传输</p>
+<p> 介质访问控制MAC子层</p>
+<p> 用来决定广播信道中信道分配</p>
+<p> 常见的介质访问控制方法</p>
+<p> 信道划分介质访问控制（ 静态划分信道）</p>
+<p> 随机访问介质访问控制（动态划分信道）</p>
+<p> 轮询访问介质访问控制（动态划分信道）</p>
+<h3 id="信道划分介质访问控制"><a href="#信道划分介质访问控制" class="headerlink" title="信道划分介质访问控制"></a>信道划分介质访问控制</h3><p> 信道划分介质访问控制将使用介质的每个设备与来自同一通信信道上的其他设备的通信隔离，把时域和频域资源合理地分配给网络上的设备</p>
+<p> 多路复用技术</p>
+<p> 多个信号组合在一条物理信道上进行传输，使多个计算机或终端设备共享信道资源</p>
+<p> 优点：提高了信道的利用率</p>
+<p> 信道划分介质访问控制分类</p>
+<p> 频分多路复用（FDM）</p>
+<p> 将多路基带信号调制到不同频率载波上，再叠加形成一个复合信号</p>
+<p> 优点：充分利用传输介质的带宽，系统效率高</p>
+<p> 不足：需要在相邻信道之间加入保护频带防止子信道互相干扰</p>
+<p> 时分多路复用（TDM）</p>
+<p> 时分多路复用是将一条物理信道按时间划分成若干时间片，轮流地分配给多个信号使用</p>
+<p> 缺点：由于计算机的数据的突发性，对子信道的利用率不高</p>
+<p> 优点：统计时分多路复用（STDM,异步时分多路复用）</p>
+<p>采用STDM帧</p>
+<p> 波分多路复用（WDM）</p>
+<p> 在一根光纤中传输多种不同波长的光信号，由于波长不同，各路光信号互不干扰，最后再用波长分解复用器将各路波长分解出来</p>
+<p> 码分多路复用（CDM）</p>
+<p> 采用不同编码来区分各路原始信号的一种复用方式。与FDM和TDM不同，它既共享信道的频率，又共享时间</p>
+<p> 码分多址</p>
+<p> 随机访问介质访问控制</p>
+<p> 不采用集中控制方式解决发送信息的次序问题，所有用户能根据自己的意愿随机地发送信息，占用信道全部速率</p>
+<h5 id="ALOHA协议"><a href="#ALOHA协议" class="headerlink" title="ALOHA协议"></a>ALOHA协议</h5><p> 纯ALOHA协议</p>
+<p>思想：当网络中任何一个站点需要发送数据时，那么该站点就认为传输过程中发生了冲突。发送站点需要等待一段时间后再发送数据，直到全部发送成功</p>
+<p>缺陷：数据碰撞的概率较大，那么网络吞吐量很低</p>
+<p> 时隙ALOHA协议</p>
+<p>思想：所有各站在时间上同步起来，并将时间划分为一段段等长的时隙，规定只能在每个时隙开始时才能发送一个帧</p>
+<p> 优点</p>
+<p>​    1） 避免了用户发送数据的随意性</p>
+<p>​    2）减少了数据产生冲突的可能性</p>
+<p>​    3）提高了信道的利用率</p>
+<p> 缺陷</p>
+<pre><code> 每个用户都是想发就发，碰撞概率还是很大
+</code></pre>
+<h5 id="CSMA协议"><a href="#CSMA协议" class="headerlink" title="CSMA协议"></a>CSMA协议</h5><p> 1-坚持CSMA</p>
+<p> 思想：一个节点要发送数据时，首先侦听信道</p>
+<p>​    如果信道空闲，那么立即发送数据</p>
+<p>​     如果信道忙，那么等待，同时继续监听直到信道空闲</p>
+<p>​     如果发生冲突，那么随机等待一段时间后，再重新开始侦听信道</p>
+<p> 缺陷</p>
+<p>​     传播时延对协议的性能影响较大</p>
+<p>​     存在碰撞现象</p>
+<p> 非-坚持CSMA</p>
+<p>思想：一个节点想要发送数据时，首先侦听信道</p>
+<p>​    如果信道空闲，那么立即发送数据</p>
+<p>​    如果信道繁忙，那么放弃侦听，等待一个随机的时间后再重复该过程</p>
+<p>​    优点：降低了多个节点等待信道空闲后同时发送数据导致冲突的概率</p>
+<p>​    缺陷：增加了数据在网络中的延迟时间</p>
+<p>P-坚持CSMA</p>
+<p>思想：一个节点想要发送，首先侦听信道</p>
+<p>​    如果信道空闲，那么以p概率发送数据，以1-p的概率推到到下一个时隙</p>
+<p>​    如果信道忙，就持续帧听，直到信道空闲</p>
+<p> 优点</p>
+<p>​     降低了冲突概率</p>
+<p>​     减少了时间延迟</p>
+<h5 id="CSMA-x2F-CD协议"><a href="#CSMA-x2F-CD协议" class="headerlink" title="CSMA&#x2F;CD协议"></a>CSMA&#x2F;CD协议</h5><p> 适用于总线型网络或半双工网络</p>
+<p> 思想：发送数据时先广播告知其他节点，让其他节点在某段时间内不要发送数据，以免出现碰撞</p>
+<p> 基本概念</p>
+<p>​     载波监听多路访问&#x2F;碰撞检测协议是CSMA的改进方案</p>
+<p>​     载波监听：发送前先侦听，即每个站在发送数据之前先要检测一下总线上是否有其他站点正在发送数据，若有则展示不发送数据，等待信道变为空闲时再发送</p>
+<p>​     碰撞检测：就是边发送边侦听，即适配器边发送数据边检测信道上信号电压的变化，以便判断自己再发送数据时其他站点是否也在发送数据</p>
+<p>​     最小帧长&#x3D;总线传播时延*数据传输率*2</p>
+<p>​     争用期：以太网端到端的往返时间，只要度过了争用期才能确定本次传输不会发生冲突</p>
+<p> 二进制指数退避算法解决碰撞</p>
+<p>​     基本概念</p>
+<p>​     定义参数K作为第几次重传</p>
+<p>​     min{K,10} ，在[0,2^k -1]随机取一个数为r</p>
+<p>​    r*争用期：重传需要推迟的平均时间随重传次数的增大而增大，降低发生碰撞的概率，有利于整个系统的稳定</p>
+<h5 id="CSMA-x2F-CA协议"><a href="#CSMA-x2F-CA协议" class="headerlink" title="CSMA&#x2F;CA协议"></a>CSMA&#x2F;CA协议</h5><p> 适用于无线连接的局域网</p>
+<p> 思想：发送前侦听，边发送边侦听，一旦出现碰撞马上停止发送</p>
+<p> 采用二进制指数退避算法实现碰撞避免机制</p>
+<p>​     预约信道：发送方在发送数据的通信向其他站点通知自己传输数据需要的时间长度，让其他站点在这段时间内不发送数据，避免碰撞</p>
+<p>​     ACK帧：所有站点在正确接收到发给自己的数据帧后，都需要发送发回一个ACK帧</p>
+<p>​     RTS&#x2F;CTS帧：可选的碰撞避免机制，主要用于解决无线网中的隐蔽站的问题</p>
+<h5 id="CSMA-x2F-CD与CSMA-x2F-CA区别"><a href="#CSMA-x2F-CD与CSMA-x2F-CA区别" class="headerlink" title="CSMA&#x2F;CD与CSMA&#x2F;CA区别"></a>CSMA&#x2F;CD与CSMA&#x2F;CA区别</h5><p>CSMA&#x2F;CD可以检测冲突，但无法避免；CSMA&#x2F;CA发送包的同时不能检测到信道无冲突</p>
+<p>CSMA&#x2F;CD用于总线型的以太网，CSMA&#x2F;CA用于局域网的802.1等</p>
+<p>CSMA&#x2F;CD通过电缆中的电压变化来检测，CSMA&#x2F;CA采用能量检测，载波检测和能量载波混合检测</p>
+<p> 轮询访问介质访问控制：令牌传递协议</p>
+<p> 通过一个集中的监控站，以循环方式轮询每个节点，再决定信道的分配</p>
+<p> 令牌再固定次序中转圈，拿到令牌就可以发送数据</p>
+<p> 使用与负载很高的广播信道</p>
+<h2 id="3-6局域网"><a href="#3-6局域网" class="headerlink" title="3.6局域网"></a>3.6局域网</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p> 在一个较小的地理范围内，将各种计算机、外部设备和数据库系统等通过双绞线、同轴电缆等连接介质互相连接起来，组成资源和信息共享的计算机互联网络</p>
+<p> 特点</p>
+<p> 1、为一个单位所拥有，且地理范围和站点数据均有限</p>
+<p>2、 所有站点共享较高的总带宽</p>
+<p> 3、较低的时延和较低的误码率</p>
+<p> 4、各站为平等关系而非主仆关系</p>
+<p> 5、能进行广播和组播</p>
+<p> 局域网的特性主要由三个要素决定：拓扑结构、传输介质、介质访问控制方式，最重要的是介质访问控制方式</p>
+<p> 常见的局域网拓扑结构</p>
+<p> 1、星形结构</p>
+<p> 2、环形结构</p>
+<p> 3、总线形结构</p>
+<p> 4、星形和总线形的符合结构</p>
+<p> 传输介质</p>
+<p> 1、双绞线、铜缆、光纤</p>
+<p> 2、双绞线为主流传输介质</p>
+<p>介质访问控制方法</p>
+<p>1、CSMA&#x2F;CD</p>
+<p> 2、令牌总线</p>
+<p> 3、令牌环</p>
+<p> 局域网拓扑实现</p>
+<p> 1、以太网：逻辑拓扑是总线形结构，物理拓扑是星形或拓展星形结构</p>
+<p> 2、令牌环：逻辑拓扑是环形结构，物理拓扑是星形结构</p>
+<p>3、FDDI：逻辑拓扑是环形结构，物理拓扑是双环结构</p>
+<p> 逻辑链路控制子层（LLC）</p>
+<p> 向网络层提供无确认的无连接、面向连接、带确认无连接、高速传送4种不同的连接服务类型</p>
+<p> 媒体介入子层（MAC）</p>
+<p> 向上层屏蔽对物理层的访问的各种差异，提供对物理层的统一接口，主要功能包括：组帧和拆卸帧、比特传输差错检测、透明传输</p>
+<h3 id="以太网与IEEE802-3"><a href="#以太网与IEEE802-3" class="headerlink" title="以太网与IEEE802.3"></a>以太网与IEEE802.3</h3><p> 采用总线形拓扑结构</p>
+<p> 简化通信</p>
+<p> 采用无连接的工作方式（尽最大努力交付）</p>
+<p> 差错的纠正由高层完成</p>
+<p> 传输介质的使用情况</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/adasd.png" alt="adasd"></p>
+<p> 网卡</p>
+<p> 局域网中连接计算机和传输介质的接口</p>
+<p> 功能</p>
+<p> 实现与局域网传输介质之间的物理连接和电信号匹配</p>
+<p> 实现帧的发送与接收、帧的封装与拆封、介质访问控制、数据的编码与解码以及数据缓存功能</p>
+<p> 介质访问控制地址（MAC)</p>
+<p> 网卡在出厂时都有一个唯一的代码</p>
+<p> 用于控制主机在网络上的数据通信</p>
+<p> 以太网的MAC帧</p>
+<p> 网卡从网络上每收到一个MAC帧，首先用硬件检查MAC帧中的MAC地址。如果是发往本站的帧，那么就收下，否则丢弃</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/QQ%E5%9B%BE%E7%89%8720220412194006.png" alt="QQ图片20220412194006"></p>
+<h3 id="高速以太网"><a href="#高速以太网" class="headerlink" title="高速以太网"></a>高速以太网</h3><p> 100BASE-T以太网</p>
+<p> 在双绞线上传送100Mb&#x2F;s基带信号的星形拓扑结构以太网</p>
+<p> 使用CSMA&#x2F;CD协议（半双工）</p>
+<p> 支持全双工方式，也支持半双工方式</p>
+<p> 吉比特以太网</p>
+<p> 在1Gb&#x2F;s下用全双工和半双工两种方式工作</p>
+<p> 半双工方式使用SCMA&#x2F;CD协议</p>
+<p> 10吉比特以太网</p>
+<p> 使用光纤作为传输媒体</p>
+<p> 只工作在全双工方式，因此没有争用问题，也不使用CSMA&#x2F;CD协议</p>
+<h3 id="IEEE802-11"><a href="#IEEE802-11" class="headerlink" title="IEEE802.11"></a>IEEE802.11</h3><p>IEEE802.11是无线局域网的一系列标准，包括802.11a和802.11等。它们指定了MAC层协议，运行在多个物理层标准上</p>
+<p> 由固定基础设施无线局域网</p>
+<p> 802.11标准规定无线局域网的最小构建是基本服务集（BSS)</p>
+<p> 组成：一个基本服务集包括几个基站和若干移动站</p>
+<p> 所有的站本BSS内都可以直接通信，但在与本BSS外的站通信时都要通过本BSS的基站</p>
+<p> 无固定基础设施无线局域网自组网络</p>
+<p> 由一些平等状态移动站相互通信组成的临时网络。各节点之间地位平等，中间节点都为转发节点，这些节点都具有路由器功能</p>
+<p> 移动自组织网络把移动性扩展到无线领域中的自治系统，具有自己特定的路由器选择协议</p>
+<h3 id="令牌环网的基本原理"><a href="#令牌环网的基本原理" class="headerlink" title="令牌环网的基本原理"></a>令牌环网的基本原理</h3><p> 令牌环网的每一站通过电缆与环接口干线耦合器（TCU)相连。TCU的主要作用是，传递所有经过的帧，为接入站发送和接收数据提供接口</p>
+<p> 控制机制</p>
+<p> 分布式控制模式的循环方法</p>
+<p> 拿到令牌就可以占有信道发送数据</p>
+<p> 物理上采用星形拓扑结构，但逻辑上采用环形拓扑结构</p>
+<h2 id="3-7广域网"><a href="#3-7广域网" class="headerlink" title="3.7广域网"></a>3.7广域网</h2><h3 id="广域网的基本概念"><a href="#广域网的基本概念" class="headerlink" title="广域网的基本概念"></a>广域网的基本概念</h3><p> 通常是覆盖范围很广的长距离网络</p>
+<p> 广域网由节点交换机以及连接这些交换机的链路组成</p>
+<p> 节点交换机用来分组存储和转发</p>
+<h3 id="广域网和局域网的对比"><a href="#广域网和局域网的对比" class="headerlink" title="广域网和局域网的对比"></a>广域网和局域网的对比</h3><p> 广域网</p>
+<p> 覆盖范围：很广，通常跨区域</p>
+<p> 连接方式：点到点连接</p>
+<p>OSI层次：物理层，数据链路层，网络层</p>
+<p> 着重点：强调资源共享</p>
+<p> 局域网</p>
+<p> 覆盖范围：较小，通常在一个区域内</p>
+<p> 连接方式：多点接入</p>
+<p>OSI层次：物理层，数据链路层</p>
+<p> 着重点：强调数据传输</p>
+<h3 id="PPP协议"><a href="#PPP协议" class="headerlink" title="PPP协议"></a>PPP协议</h3><p> 概要：使用串行线路通信的面向字节的协议，该协议应用在直线连接两个节点的链路上</p>
+<p> 目的：主要是用来通过拨号或专线方式建立点对点连接发送资源</p>
+<p>PPP协议是在SLIP协议的基础上发展而来的，它既可以在异步线路上传输，又可在同步线路上使用；不仅用于Modem链路，也用于租用的路由器到路由器的线路</p>
+<p>SLIP主要完成数据报的传送，但没有寻址、数据校验、分组类型识别和数据压缩等功能，只能传送IP分组</p>
+<p> 组成部分</p>
+<p> 链路控制协议（LCP)：一种扩展链路控制协议，用于建立、配置、测试和管理数据链路</p>
+<p> 网络控制协议（NCP）：PPP协议允许同时采用多种网络层协议，每个不同的网络层要用一个相应的NCP来配置，为网络层协议建立和配置逻辑连接</p>
+<p> 一个将IP数据报封装到串行链路的方法：IP数据报在PPP帧中就是其信息部分，这个信息部分的长度受最大传送单元（MTU）限制</p>
+<p> 帧格式</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/QQ%E5%9B%BE%E7%89%8720220412195729.png" alt="QQ图片20220412195729"></p>
+<p> 注意</p>
+<p>PPP协议提供差错检测但不提供纠错功能，只保证无差错接收（通过硬件进行CRC校验）。它是不可靠的传输的协议，因此也不适用序号和确认机制</p>
+<p> 它仅支持点对点的链路通信，不支持多点线路</p>
+<p>PPP只支持全双工链路</p>
+<p>PPP的两端可以运行不同的网络层协议，但仍然可使用同一个PPP进行通信</p>
+<p>PPP是面向字节的，当信息字段出现和标志字段一直的比特组合时</p>
+<p>PPP用在异步线路（默认），则采用字节填充算法</p>
+<p>PPP用在SONET&#x2F;SDH等同步线路，则协议规定采用硬件来完成比特填充</p>
+<h3 id="HDLC协议"><a href="#HDLC协议" class="headerlink" title="HDLC协议"></a>HDLC协议</h3><p> 概要</p>
+<p> 数据报文可透明传输，用于实现透明传输的0比特插入法易于硬件实现</p>
+<p> 全双工通信，有较高的数据链路传输效率</p>
+<p> 传输控制功能与处理功能分离，具有较大的灵活性</p>
+<p> 所有帧采用CRC检验，对信息帧进行顺序编码，可防止漏收或重发，传输可靠性高</p>
+<p> 两种配置方式</p>
+<p> 非非平衡配置的特点是由一个主站控制整个链路的工作</p>
+<p> 平衡配置的特点是链路两端的两个站都是复合站，每个复合站都可以平等地发起数据传输，而不需要的来对方复合站的允许</p>
+<p> 站类型</p>
+<p> 主站：负责控制链路的操作，主站发出的命令为命令帧</p>
+<p> 从站：受控于主站，按主站发出的命令进行操作，发出的命令为响应帧</p>
+<p> 复合站：可以发出命令帧和响应帧</p>
+<h2 id="3-8数据链路层设备"><a href="#3-8数据链路层设备" class="headerlink" title="3.8数据链路层设备"></a>3.8数据链路层设备</h2><h3 id="路径选择算法（源路由网桥（选择的是最佳路由））"><a href="#路径选择算法（源路由网桥（选择的是最佳路由））" class="headerlink" title="路径选择算法（源路由网桥（选择的是最佳路由））"></a>路径选择算法（源路由网桥（选择的是最佳路由））</h3><p> 源站以广播方式向目的站发送一个发现帧作为探测之用，然后根据经过的节点生成最佳路径</p>
+<p> 路由选择由发送数据帧的源站负责，网桥只根据数据真正的路由信息对帧进行接收和转发</p>
+<p> 缺陷：如果发现帧过多，会导致网络出现堵塞</p>
+<h3 id="局域网交换机机器工作原理"><a href="#局域网交换机机器工作原理" class="headerlink" title="局域网交换机机器工作原理"></a>局域网交换机机器工作原理</h3><p> 局域网交换机</p>
+<p> 又称以太网交换机，从本质上说，交换机就是一个多端口的网桥</p>
+<p> 能经济地将网络分成小的冲突域，为每个工作站提供更高的带宽</p>
+<p> 优点</p>
+<p> 对工作站是透明的，管理开销低廉</p>
+<p> 简化了网络节点的增加，移动和网络变化的操作</p>
+<p> 方便地实现虚拟局域网（VLAN）</p>
+<p>​        VLLAN可以隔离冲突域，而且可以隔离广播域</p>
+<p> 原理</p>
+<p> 检测以太端口来的数据帧的源和目的的MAC地址，然后与系统内部的动态查找表进行比较</p>
+<p> 若数据帧的MAC地址不在查找表中，则将该地址加入查找表，并将数据帧发送给相应的目的端口</p>
+<p> 特点</p>
+<p> 工作在全双工方式</p>
+<p> 碰撞地传输数据</p>
+<p> 转发表也是通过自学习算法自动地逐渐建立起来的</p>
+<p> 使用了专用的交换结构芯片，因此交换速率较高</p>
+<p> 独占传输媒体的带宽</p>
+<p> 两种交换方式</p>
+<p> 直通式交换机</p>
+<p> 只检查帧的目的地址，数据帧可以马上被传输出去</p>
+<p> 优点：速度快</p>
+<p> 缺点：缺乏智能性和安全性，也无法支持具有不用速率的端口的交换</p>
+<p> 存储转发式交换机</p>
+<p> 先将收到的帧缓存，然后检查数据是否正确</p>
+<p>​     正确就发送出去</p>
+<p>​    发现帧有错，那么将其丢弃</p>
+<p> 优点：可靠性高，并只能支持不同速率端口间的转换</p>
+<p> 缺点：延迟较大</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.png" alt="数据链路层"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/03/10/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" title="第三章:数据链路层">https://wjjhui.github.io/2022/03/10/第三章：数据链路层/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/01/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%89%A9%E7%90%86%E5%B1%82/" rel="prev" title="第二章:物理层">
+      <i class="fa fa-chevron-left"></i> 第二章:物理层
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/17/%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%B1%82/" rel="next" title="第四章:网络层">
+      第四章:网络层 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">3.1 数据链路层的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%B8%BA%E7%BD%91%E7%BB%9C%E5%B1%82%E6%8F%90%E4%BE%9B%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text">1、为网络层提供服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E9%93%BE%E8%B7%AF%E7%AE%A1%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">2、链路管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E5%B8%A7%E5%AE%9A%E7%95%8C%E3%80%81%E5%B8%A7%E5%90%8C%E6%AD%A5%E4%B8%8E%E9%80%8F%E6%98%8E%E4%BC%A0%E8%BE%93"><span class="nav-number">1.4.</span> <span class="nav-text">3、帧定界、帧同步与透明传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">1.5.</span> <span class="nav-text">4、流量控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6"><span class="nav-number">1.6.</span> <span class="nav-text">5、差错控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E7%BB%84%E5%B8%A7"><span class="nav-number">2.</span> <span class="nav-text">3.2 组帧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">功能实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%AD%97%E7%AC%A6%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">1、字符计数法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%AD%97%E7%AC%A6%E5%A1%AB%E5%85%85%E7%9A%84%E9%A6%96%E4%BD%8D%E7%95%8C%E5%AE%9A%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">2、字符填充的首位界定法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E9%9B%B6%E6%AF%94%E7%89%B9%E8%B7%B3%E8%99%AB%E7%9A%84%E9%A6%96%E4%BD%8D%E6%A0%87%E5%BF%97%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">3、零比特跳虫的首位标志法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E8%BF%9D%E8%A7%84%E7%BC%96%E7%A0%81%E6%B3%95"><span class="nav-number">2.5.</span> <span class="nav-text">4、违规编码法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%89%8D%E6%9C%80%E5%B8%B8%E7%9A%84%E7%BB%84%E5%B8%A7%E6%96%B9%E5%BC%8F%E6%98%AF%E6%AF%94%E7%89%B9%E5%A1%AB%E5%85%85%E6%B3%95%E5%92%8C%E8%BF%9D%E8%A7%84%E7%BC%96%E7%A0%81%E6%B3%95"><span class="nav-number">2.6.</span> <span class="nav-text">目前最常的组帧方式是比特填充法和违规编码法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">3.3 差错控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%A6%81-1"><span class="nav-number">3.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E7%BC%96%E7%A0%81%E6%8A%80%E6%9C%AF%E8%BF%9B%E8%A1%8C%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">利用编码技术进行差错控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E9%94%99%E7%BC%96%E7%A0%81"><span class="nav-number">3.3.</span> <span class="nav-text">检错编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A0%E9%94%99%E7%BC%96%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text">纠错编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E5%92%8C%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">3.4流量控制和可靠传输机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E3%80%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%E4%B8%8E%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.</span> <span class="nav-text">流量控制、可靠传输与滑动窗口机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2-%E7%AD%89%E5%BE%85%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.2.</span> <span class="nav-text">停止-等待协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E9%80%80N%E5%B8%A7%E5%8D%8F%E8%AE%AE%EF%BC%88GBN%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">后退N帧协议（GBN）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%80%A7%E9%87%8D%E4%BC%A0%E5%8D%8F%E8%AE%AE%EF%BC%88SR%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">选择性重传协议（SR）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5%E4%BB%8B%E8%B4%A8%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">5.</span> <span class="nav-text">3.5介质访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E9%81%93%E5%88%92%E5%88%86%E4%BB%8B%E8%B4%A8%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">5.2.</span> <span class="nav-text">信道划分介质访问控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ALOHA%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.0.1.</span> <span class="nav-text">ALOHA协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CSMA%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.0.2.</span> <span class="nav-text">CSMA协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CSMA-x2F-CD%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.0.3.</span> <span class="nav-text">CSMA&#x2F;CD协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CSMA-x2F-CA%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.0.4.</span> <span class="nav-text">CSMA&#x2F;CA协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CSMA-x2F-CD%E4%B8%8ECSMA-x2F-CA%E5%8C%BA%E5%88%AB"><span class="nav-number">5.2.0.5.</span> <span class="nav-text">CSMA&#x2F;CD与CSMA&#x2F;CA区别</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6%E5%B1%80%E5%9F%9F%E7%BD%91"><span class="nav-number">6.</span> <span class="nav-text">3.6局域网</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">6.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%B8%8EIEEE802-3"><span class="nav-number">6.2.</span> <span class="nav-text">以太网与IEEE802.3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E9%80%9F%E4%BB%A5%E5%A4%AA%E7%BD%91"><span class="nav-number">6.3.</span> <span class="nav-text">高速以太网</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IEEE802-11"><span class="nav-number">6.4.</span> <span class="nav-text">IEEE802.11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A4%E7%89%8C%E7%8E%AF%E7%BD%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">6.5.</span> <span class="nav-text">令牌环网的基本原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7%E5%B9%BF%E5%9F%9F%E7%BD%91"><span class="nav-number">7.</span> <span class="nav-text">3.7广域网</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E5%9F%9F%E7%BD%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">7.1.</span> <span class="nav-text">广域网的基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E5%9F%9F%E7%BD%91%E5%92%8C%E5%B1%80%E5%9F%9F%E7%BD%91%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">7.2.</span> <span class="nav-text">广域网和局域网的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PPP%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.3.</span> <span class="nav-text">PPP协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDLC%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.4.</span> <span class="nav-text">HDLC协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-8%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E8%AE%BE%E5%A4%87"><span class="nav-number">8.</span> <span class="nav-text">3.8数据链路层设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95%EF%BC%88%E6%BA%90%E8%B7%AF%E7%94%B1%E7%BD%91%E6%A1%A5%EF%BC%88%E9%80%89%E6%8B%A9%E7%9A%84%E6%98%AF%E6%9C%80%E4%BD%B3%E8%B7%AF%E7%94%B1%EF%BC%89%EF%BC%89"><span class="nav-number">8.1.</span> <span class="nav-text">路径选择算法（源路由网桥（选择的是最佳路由））</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E5%9F%9F%E7%BD%91%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%9C%BA%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">8.2.</span> <span class="nav-text">局域网交换机机器工作原理</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

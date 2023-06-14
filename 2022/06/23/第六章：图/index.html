@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第六章:图">
+<meta property="og:url" content="https://wjjhui.github.io/2022/06/23/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%9B%BE/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627221450297.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627224308042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627225156835.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220628153614030.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220628153805303.png">
+<meta property="article:published_time" content="2022-06-23T15:00:42.000Z">
+<meta property="article:modified_time" content="2022-06-28T08:25:29.465Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627221450297.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/06/23/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%9B%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第六章:图 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/06/23/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%9B%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第六章:图
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-23 23:00:42" itemprop="dateCreated datePublished" datetime="2022-06-23T23:00:42+08:00">2022-06-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-28 16:25:29" itemprop="dateModified" datetime="2022-06-28T16:25:29+08:00">2022-06-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="图的基本概念"><a href="#图的基本概念" class="headerlink" title="图的基本概念"></a>图的基本概念</h2><p>图的定义：图G由顶点集V和边集E组成,记为G&#x3D;(V，E ) ,其中V(G)表示图G中顶点的有限非空集:E( G )表示图G中顶点之间的关系(边)集合</p>
+<p><strong>注意！</strong>：线性表可以是空表，树可以是空树，图不能是空图</p>
+<p><strong>简单图</strong>：不存在重复边，不存在顶点到自身的边</p>
+<p><strong>多重图</strong>：若图中某两个结点之间的边数多于一条，有允许顶点通过同一条边和自己关联，则G为多重图</p>
+<p><strong>子图</strong>：设有两个图G&#x3D;(VE)和G’&#x3D;(VE’),若V是V的子集,且E是E的子集,则称G’是G的子图。若有满足V(G’)&#x3D;V(G)的子图G，则称其为G的生成子图</p>
+<p><strong>连通、连通图和连通分量</strong>：</p>
+<ol>
+<li>在无向图中，若顶点b到顶点w有路径存在，则称v和w是连通的</li>
+<li>若图G中任意两个顶点都是连通，即有路径即可，则称图G为连通图</li>
+<li>无向图中的极大连通子图称为连通分量</li>
+<li>若一个图G有n个顶点且变数小于n-1，则G必为非连通图</li>
+</ol>
+<p><strong>强连通图、强连通分量</strong></p>
+<ol>
+<li>强连通图：在有向图G中，任意一对顶点之间存在相互通路的路径</li>
+<li>强连通分量：有向图中的极大强连通图</li>
+</ol>
+<p><strong>无向完全图</strong>：无向图中任意两个顶点都存在边（）</p>
+<p><strong>有向完全图</strong>：有向图中任意两个顶点之间存在方向相反的两条弧&lt;&gt;</p>
+<h2 id="图的存储和基本操作"><a href="#图的存储和基本操作" class="headerlink" title="图的存储和基本操作"></a>图的存储和基本操作</h2><h3 id="邻接矩阵法"><a href="#邻接矩阵法" class="headerlink" title="邻接矩阵法"></a>邻接矩阵法</h3><p>用一个一维数组存储图顶点中的信息，用一个二位数组存储图中边的信息（即各顶点之间的邻接关系）</p>
+<p>存储顶点之间邻接关系的二位数组称为邻接矩阵，在无向图中可以通过矩阵压缩。</p>
+<p><strong>优点</strong>：</p>
+<ol>
+<li><p>直观，简单，方便检查任意一对顶点间是否存在边</p>
+</li>
+<li><p>方便找任一顶点的所有“邻接点”（有边直接相连的顶点）</p>
+</li>
+<li><p>方便计算任一节点的 “度” （从该点出发的边数为“出度”，指向该点的边数为“入度”</p>
+<ul>
+<li><p>无向图：对应行（列）的非0元素的个数</p>
+</li>
+<li><p>有向图：对应行非0元素的个数是“出度”，对应列非0元素的个数是“入度”</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>浪费空间—存储稀疏的时候，有大量无效元素，但是如果稠密的话，就不会有这个问题</li>
+<li>浪费时间—统计稀疏图中一共有多少边</li>
+<li>空间复杂度为O（n^2）</li>
+</ul>
+<h3 id="邻接表法"><a href="#邻接表法" class="headerlink" title="邻接表法"></a>邻接表法</h3><p>对于稀疏图使用邻接矩阵法要浪费大量的存储空间，邻接表法了结合了顺序存储和链式存储。类似于树的孩子表示法。</p>
+<p>对于图G中的每个顶点建立一个链表，链表中的结点表示依附于顶点</p>
+<p>边表和头指针和顶点的数据信息采用顺序存储（顶点表）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627221450297.png" alt="image-20220627221450297"></p>
+<p>特点：</p>
+<ol>
+<li>若G为无向图，则所需的存储空间为O（|v|+2|E|）,若G为有向图，则所需的存储空间为O（|v|+|E|）</li>
+<li>对于稀疏图，采用邻接表法可以大量的节省存储空间</li>
+<li>在无向图的邻接表中，给定一顶点，能很容易的找出它的所有邻边</li>
+<li>在有向图的邻接表中，求一个给定顶点的出度只需要计算其邻接表中的结点个数，但求其顶点的入度则需要遍历全部的邻接表</li>
+<li>图的邻接表表示并不唯一</li>
+</ol>
+<h3 id="十字链表法（有向图）"><a href="#十字链表法（有向图）" class="headerlink" title="十字链表法（有向图）"></a>十字链表法（有向图）</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627224308042.png" alt="image-20220627224308042"></p>
+<h3 id="邻接多重表法（无向图）"><a href="#邻接多重表法（无向图）" class="headerlink" title="邻接多重表法（无向图）"></a>邻接多重表法（无向图）</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220627225156835.png" alt="image-20220627225156835"></p>
+<h3 id="图的基本操作"><a href="#图的基本操作" class="headerlink" title="图的基本操作"></a>图的基本操作</h3><p>AdjacentG（G，x，y）：判断图G是否存在边&lt;x，y&gt;或（x，y）</p>
+<p>Neihbors（G，x）：列出图G中与x邻接的边</p>
+<p>InsertVertex（G，x）：在图G中插入顶点x</p>
+<p>DeleteVertex（G，x）：从图中删除顶点x</p>
+<p>AddEdge（G，x，y）：若无向边（x，y）或有向边&lt;x，y&gt;不存在，则向图中添加该边</p>
+<p>RemoveEdge（G，x，y）：若无向边（x，y）或有向边&lt;x，y&gt;存在，则从图G中删除该边</p>
+<p>FirstNeighbor（G，x）：求图G中顶点x的第一个邻接点</p>
+<p>NextNeighbor（G，x，y）：求图G中除y之外顶点x的下一个邻接点的定点号</p>
+<p>Get_egde_value(G，x，y)：获取图G中边（x，y）或&lt;x，y&gt;对应的权值</p>
+<p>Set_egde_value(G，x，y)：设置图G中边（x，y）或&lt;x，y&gt;对应的权值</p>
+<h2 id="图的遍历算法"><a href="#图的遍历算法" class="headerlink" title="图的遍历算法"></a>图的遍历算法</h2><h3 id="广度优先遍历（BFS）"><a href="#广度优先遍历（BFS）" class="headerlink" title="广度优先遍历（BFS）"></a>广度优先遍历（BFS）</h3><ul>
+<li>邻接矩阵存储图的时间复杂度为：O（V^2）</li>
+<li>邻接表存储图的时间复杂度为：O（V+E）</li>
+</ul>
+<p>空间复杂为：O（V）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> visited[MAX_VERTEX_NUM];   <span class="comment">//访问标记数组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//对图进行遍历，初始值标记全部为false，遍历过标记为true</span></span><br><span class="line"><span class="comment">//对于每个连通分量调用一次BFS</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BFSTraverse</span><span class="params">(Graph G)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.vexnum;++i)</span><br><span class="line">        visited[i]=FALSE;</span><br><span class="line">    <span class="built_in">InitQueue</span>(Q);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.vexnum;++i)</span><br><span class="line">        <span class="keyword">if</span>(!visited[i])</span><br><span class="line">            <span class="built_in">BFS</span>(G,i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span>  <span class="title">BFS</span><span class="params">(Graph G,<span class="type">int</span> v)</span></span>&#123;    	<span class="comment">//从顶点v出发，广度优先遍历图G</span></span><br><span class="line">    <span class="built_in">visit</span>(v);					<span class="comment">//访问初始顶点v</span></span><br><span class="line">    visited[v]=TRUE;			<span class="comment">//对v做已访问的标记</span></span><br><span class="line">    <span class="built_in">Enqueue</span>(Q,v);				<span class="comment">//顶点v入队列Q</span></span><br><span class="line">    <span class="keyword">while</span>(!<span class="built_in">isEmpty</span>(Q))&#123;</span><br><span class="line">        <span class="built_in">DeQueue</span>(Q,v);			<span class="comment">//顶点v出队</span></span><br><span class="line">        <span class="keyword">for</span>(w=<span class="built_in">FirstNeighbor</span>(G,v);w&gt;=<span class="number">0</span>;w=<span class="built_in">NextNeighbor</span>(G,v,w))</span><br><span class="line">            <span class="keyword">if</span>(!visited[w])&#123;	<span class="comment">//w为v的尚未访问的邻接顶点</span></span><br><span class="line">                <span class="built_in">visit</span>(w);		<span class="comment">//访问顶点w</span></span><br><span class="line">                visited[w]=True;<span class="comment">//对w标记</span></span><br><span class="line">                <span class="built_in">EnQueue</span>(Q,w)	<span class="comment">//顶点w入队</span></span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="深度优先遍历（DFS）"><a href="#深度优先遍历（DFS）" class="headerlink" title="深度优先遍历（DFS）"></a>深度优先遍历（DFS）</h3><ul>
+<li>邻接矩阵存储图的时间复杂度为：O（V^2）</li>
+<li>邻接表存储图的时间复杂度为：O（V+E）</li>
+</ul>
+<p>空间复杂为：O（V）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> visited[MAX_VERTEX_NUM];   <span class="comment">//访问标记数组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//对图进行遍历，初始值标记全部为false，遍历过标记为true</span></span><br><span class="line"><span class="comment">//对于每个连通分量调用一次BFS</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">DFSTraverse</span><span class="params">(Graph G)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.vexnum;++i)</span><br><span class="line">        visited[i]=FALSE;</span><br><span class="line">    <span class="built_in">InitQueue</span>(Q);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.vexnum;++i)</span><br><span class="line">        <span class="keyword">if</span>(!visited[i])</span><br><span class="line">            <span class="built_in">DFS</span>(G,i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">DFS</span><span class="params">(Graph G,<span class="type">int</span> v)</span></span>&#123;    	<span class="comment">//从顶点v出发，广度优先遍历图G</span></span><br><span class="line">    <span class="built_in">visit</span>(v);					<span class="comment">//访问初始顶点v</span></span><br><span class="line">    visited[v]=TRUE;			<span class="comment">//对v做已访问的标记</span></span><br><span class="line">    <span class="keyword">while</span>(!<span class="built_in">isEmpty</span>(Q))&#123;</span><br><span class="line">        <span class="built_in">DeQueue</span>(Q,v);			<span class="comment">//顶点v出队</span></span><br><span class="line">        <span class="keyword">for</span>(w=<span class="built_in">FirstNeighbor</span>(G,v);w&gt;=<span class="number">0</span>;w=<span class="built_in">NextNeighbor</span>(G,v,w))</span><br><span class="line">            <span class="keyword">if</span>(!visited[w])</span><br><span class="line">              <span class="built_in">DFS</span>(G,w)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="图的应用"><a href="#图的应用" class="headerlink" title="图的应用"></a>图的应用</h2><h3 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h3><p><strong>Prim算法（从顶点出发）</strong></p>
+<p>从一个顶点开始构建生成树，每次讲代价最小的新顶点纳入生成树，直到所有顶点都纳入为止</p>
+<p>时间复杂度为：O（V^2）</p>
+<p><strong>Kruskal算法（从边出发）</strong></p>
+<p>每次选择一条权值最小的边，使这条边的两头连通（原来已经连通的就不选），直到所有结点都连通</p>
+<p>时间复杂度为：O（Elog2E）</p>
+<h3 id="最短路径"><a href="#最短路径" class="headerlink" title="最短路径"></a>最短路径</h3><h4 id="BFS广度优先算法（无权图）"><a href="#BFS广度优先算法（无权图）" class="headerlink" title="BFS广度优先算法（无权图）"></a><strong>BFS广度优先算法（无权图）</strong></h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> visited[MAX_VERTEX_NUM];   <span class="comment">//访问标记数组</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//求顶点u到其他顶点的最短路径</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BFS_MIN_Distance</span><span class="params">(Graph G,<span class="type">int</span> u)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;G.vexnum;++i)&#123;</span><br><span class="line">        d[i]=+<span class="number">00</span>;   <span class="comment">//路径前驱</span></span><br><span class="line">        path[i]=<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  	d[u]=<span class="number">0</span>;</span><br><span class="line">    visited[v]=TRUE;			<span class="comment">//对v做已访问的标记</span></span><br><span class="line">    <span class="built_in">Enqueue</span>(Q,v);				<span class="comment">//顶点v入队列Q</span></span><br><span class="line">    <span class="keyword">while</span>(!<span class="built_in">isEmpty</span>(Q))&#123;</span><br><span class="line">        <span class="built_in">DeQueue</span>(Q,v);			<span class="comment">//顶点v出队</span></span><br><span class="line">        <span class="keyword">for</span>(w=<span class="built_in">FirstNeighbor</span>(G,v);w&gt;=<span class="number">0</span>;w=<span class="built_in">NextNeighbor</span>(G,v,w))</span><br><span class="line">            <span class="keyword">if</span>(!visited[w])&#123;	<span class="comment">//w为v的尚未访问的邻接顶点</span></span><br><span class="line">                d[w]=d[u]+<span class="number">1</span>;</span><br><span class="line">                path[w]=u;</span><br><span class="line">                visited[w]=True;<span class="comment">//对w标记</span></span><br><span class="line">                <span class="built_in">EnQueue</span>(Q,w)	<span class="comment">//顶点w入队</span></span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Dijkstra算法"><a href="#Dijkstra算法" class="headerlink" title="Dijkstra算法"></a><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220628153614030.png" alt="image-20220628153614030"><strong>Dijkstra算法</strong></h4><ol>
+<li>初始化：集和S初始为{0}，dist[]初始值为与顶点v0的路径长度，path[]初始值为路径上的前驱。</li>
+<li>从顶点集S选出路径长度最短的顶点v</li>
+<li>修改从v出发到集和上其他顶点可达的路径长度，比当前长度短则修改dist长度并将前驱修改为v</li>
+<li>重复2-3操作n-1次，直到多有顶点都包含在S中</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20220628153805303.png" alt="image-20220628153805303"></p>
+<p><strong>注意！:不适用于权值存在负数的情况</strong></p>
+<h4 id="Floyd算法"><a href="#Floyd算法" class="headerlink" title="Floyd算法"></a><strong>Floyd算法</strong></h4><p>求每一对顶点之间的最短路径</p>
+<p>使用动态规划思想，将问题的求解分为多个阶段</p>
+<ol>
+<li>初始：不允许存在其他顶点中转，最短路径是？</li>
+<li>若允许v0中转，最短路径是？</li>
+<li>若允许v0，v1中转，最短路径是？</li>
+<li>……</li>
+<li>若允许v0，v1，v2，v3……vn-1中转，最短路径是？</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/06/23/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%9B%BE/" title="第六章:图">https://wjjhui.github.io/2022/06/23/第六章：图/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/21/%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A0%91/" rel="prev" title="第五章:树">
+      <i class="fa fa-chevron-left"></i> 第五章:树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/29/%E7%AC%AC%E4%B8%83%E7%AB%A0%EF%BC%9A%E6%9F%A5%E6%89%BE/" rel="next" title="第七章:查找">
+      第七章:查找 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">图的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AD%98%E5%82%A8%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">图的存储和基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">邻接矩阵法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%A1%A8%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">邻接表法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E6%B3%95%EF%BC%88%E6%9C%89%E5%90%91%E5%9B%BE%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">十字链表法（有向图）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E5%A4%9A%E9%87%8D%E8%A1%A8%E6%B3%95%EF%BC%88%E6%97%A0%E5%90%91%E5%9B%BE%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">邻接多重表法（无向图）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.5.</span> <span class="nav-text">图的基本操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">图的遍历算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86%EF%BC%88BFS%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">广度优先遍历（BFS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86%EF%BC%88DFS%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">深度优先遍历（DFS）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">图的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">4.1.</span> <span class="nav-text">最小生成树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-number">4.2.</span> <span class="nav-text">最短路径</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BFS%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E7%AE%97%E6%B3%95%EF%BC%88%E6%97%A0%E6%9D%83%E5%9B%BE%EF%BC%89"><span class="nav-number">4.2.1.</span> <span class="nav-text">BFS广度优先算法（无权图）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dijkstra%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.2.</span> <span class="nav-text">Dijkstra算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Floyd%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.3.</span> <span class="nav-text">Floyd算法</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第三章:内存管理">
+<meta property="og:url" content="https://wjjhui.github.io/2022/04/18/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%A8%8B%E5%BA%8F%E8%A3%85%E5%85%A5%E6%AD%A5%E9%AA%A4.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1%E3%80%81%E9%A6%96%E6%AC%A1%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/2%E3%80%81%E9%82%BB%E8%BF%91%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/3%E3%80%81%E6%9C%80%E4%BD%B3%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/4%E3%80%81%E6%9C%80%E5%9D%8F%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%BA%E7%A1%80%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%84%E5%9B%BE%E8%A7%A3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%85%B7%E6%9C%89%E5%BF%AB%E8%A1%A8%E7%9A%84%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%84%E5%9B%BE%E8%A7%A3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%88%86%E6%AE%B5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%96%B9%E5%BC%8F.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-16513308254251.png">
+<meta property="article:published_time" content="2022-04-18T11:31:50.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:43:55.799Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%A8%8B%E5%BA%8F%E8%A3%85%E5%85%A5%E6%AD%A5%E9%AA%A4.jpg">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/04/18/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第三章:内存管理 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/04/18/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第三章:内存管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-18 19:31:50" itemprop="dateCreated datePublished" datetime="2022-04-18T19:31:50+08:00">2022-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:43:55" itemprop="dateModified" datetime="2022-05-15T18:43:55+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>6.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>6 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="3-1内存管理概念"><a href="#3-1内存管理概念" class="headerlink" title="3.1内存管理概念"></a>3.1内存管理概念</h2><h3 id="内存管理的基本原理和要求"><a href="#内存管理的基本原理和要求" class="headerlink" title="内存管理的基本原理和要求"></a>内存管理的基本原理和要求</h3><p>   程序执行前需要先放到内存中才能被CPU处理——缓和CPU与硬盘之间的速度矛盾</p>
+<p>   内存管理的功能</p>
+<p>   1、内存空间的分配与回收：操作系统完成主存储器空间的分配和管理</p>
+<p>   2、地址转换：逻辑地址转换为物理地址</p>
+<p>   3、内存空间的扩充：利用虚拟存储技术或者自动覆盖技术，从逻辑上扩充内存</p>
+<p>   4、内存的保护：保护各道作业在各自存储空间运行，互不干扰</p>
+<p>   程序的装入和连接</p>
+<p>   创建步骤</p>
+<p>   1、编译：编译程序将用户源码编译成若干目标模块</p>
+<p>   2、链接：由链接程序将编译后的形成的一组目标模块及所需要的库函数链接在一起，形成一个完整的装入模块</p>
+<p>   3、装入：由装入程序将装入模块装入内存运行</p>
+<p>   程序装入步骤</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%A8%8B%E5%BA%8F%E8%A3%85%E5%85%A5%E6%AD%A5%E9%AA%A4.jpg" alt="程序装入步骤"></p>
+<p>   链接的类型</p>
+<p>   1、静态链接：程序运行之前，将库函数链接成一个完整的可执行文件</p>
+<p>   2、装入时动态链接：将用户源程序编译后得到目标模块，装入内存时，采用边装入边链接</p>
+<p>   3、运行时动态链接：对于某些目标模块的链接，程序需要时才会对其链接，便于修改和更新，便于实现对目标模块的共享</p>
+<p>   装入模式</p>
+<p>   1、绝对装入：装入时按照实际的内存地址，将程序和数据装入内存</p>
+<p>   优点：不需要对程序和数据的地址进行修改</p>
+<p>   缺点：只适用于单道程序环境</p>
+<p>   2、可重定位转入（静态重定位）：此时采用的是模块与模块的相对地址，然后将程序和数据装入内存，装入时对目标程序中指令和数据的修改过程称为重定位，地址变换通常是在装入时一次完成的，又称为静态重定位</p>
+<p>   特点：作业装入必须要一次性全部装入，并且运行中作业不能在内存中移动，也不能申请内存空间</p>
+<p>   3、动态运行时装入（动态重定位）：装入程序把装入模块装入内存后，并不立即把装入模块中的相对地址转换为绝对地址，当程序真正执行时才进行转换</p>
+<p>   特点：需要重定位寄存器，可以将程序分配到不连续的存储区中，便于程序段的共享，可以想用户提供更大的地址空间</p>
+<p>   逻辑地址空间与物理地址空间</p>
+<p>   1、逻辑地址空间：即相对地址，链接程序一次按照各个模块的相对地址构成统一的从0号单元开始编址的逻辑空间地址</p>
+<p>   2、物理地址空间：内存中物理单元的集和，是地址转换的最终地址，进程在运行执行指令和访问数据，最后都要通过物理地址从主存中取出（地址重定位：逻辑地址转换成物理地址的过程）</p>
+<p>   内存保护</p>
+<p>   1、CPU中设置上、下限寄存器，存放用户作业在主存中的下限和上限地址，每当CPU要访问一个地址时，分别和两个寄存器的数据比较，判断是否越界</p>
+<p>   2、重定位寄存器（基址寄存器）和界地址寄存器（限长寄存器）：重定位寄存器中包含最小物理地址值，解地址寄存器包含逻辑地址的最大值</p>
+<h3 id="覆盖与交换"><a href="#覆盖与交换" class="headerlink" title="覆盖与交换"></a>覆盖与交换</h3><p>   覆盖</p>
+<p>   1、思想：将程序分为多个段。常用的段常驻内存，不常用的段在需要时调用内存</p>
+<p>   2、将用户空间分为一个固定区和若干覆盖区，活跃的放在固定区，即将访问的段放在覆盖区</p>
+<p>   3、特点：打破了必须将一个进程的全部信息装入主存后才能运行的限制，即访问的段放在覆盖区</p>
+<p>   交换</p>
+<p>   1、思想：内存空间紧张时，系统将内存中某些进程暂时换出外存，把外存中某些已具备运行条件的进程换入内存（进程在内存和磁盘见动态调度）</p>
+<p>   2、换出：将处于等待状态的程序从内存中转移到辅存</p>
+<p>   3、换入：把准备好竞争CPU运行的程序从辅存转移到内存</p>
+<p>   4、结构：把磁盘空间分为文件区和对换区两部分</p>
+<p>   交换存在的问题</p>
+<p>   1、备份存储，使用快速硬盘，要求存储空间足够大，并且能够对内存映像进行访问</p>
+<p>   2、转移时间和所交换的内存空间成正比</p>
+<p>   3、只有进程空间状态才能将进程换出</p>
+<p>   4、交换空间通常作为磁盘的一整块，且独立于文件系统，因此使用起来会很快</p>
+<p>   5、交换通常由许多进程运行且内存吃紧时开始启动，系统负荷降低就暂停</p>
+<p>   6、普通的交换使用不多，但交换策略的某些变体在许多系统中仍发挥作用</p>
+<p>   注意：PCB会常驻内存，不会被换出外存</p>
+<h3 id="连续分配管理方式"><a href="#连续分配管理方式" class="headerlink" title="连续分配管理方式"></a>连续分配管理方式</h3><p>   单一连续分配方式</p>
+<p>   内存分为系统区和用户区，系统区仅操作系统使用，通常在低地址部分，用户区为用户提供</p>
+<p>   优点：无需进行内存保护，不会出现越界异常。实现简单，无外部碎片，采用覆盖技术，不需要额外技术支持</p>
+<p>   缺点：只适用于单用户，单任务的操作系统。存在内部碎片，存储器利用率低</p>
+<p>   固定分区分配</p>
+<p>   种类</p>
+<p>   1、分区大小相等：用一台计算机区控制多个相同对象的场合，缺乏灵活性</p>
+<p>   2、分区大小不等：划分多个较小的分区，适量的中等分区和少量大分区</p>
+<p>   优点：适用于多道程序的存储，无外部碎片</p>
+<p>   缺点</p>
+<p>   1、程序太大，无法放进任何一个分区</p>
+<p>   2、主存利用考虑低，存在内部碎片</p>
+<p>   3、不能实现多进程共享一个主存区</p>
+<p>   动态分区分配</p>
+<p>   在进程装入内存的时候，根据内存的大小动态建立分区</p>
+<p>   优点：分区大小可以根据进程的实际情况进行分配</p>
+<p>   缺点：存在外部碎片，最后导致主存利用率下降，采用紧凑技术可缓解这种缺陷</p>
+<p>   动态分配算法</p>
+<p>   1、首次适应算法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1%E3%80%81%E9%A6%96%E6%AC%A1%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png" alt="1、首次适应算法"></p>
+<p>   2、邻近适应算法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/2%E3%80%81%E9%82%BB%E8%BF%91%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png" alt="2、邻近适应算法"></p>
+<p>   3、最佳适应算法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/3%E3%80%81%E6%9C%80%E4%BD%B3%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png" alt="3、最佳适应算法"></p>
+<p>   4、最坏适应算法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/4%E3%80%81%E6%9C%80%E5%9D%8F%E9%80%82%E5%BA%94%E7%AE%97%E6%B3%95.png" alt="4、最坏适应算法"></p>
+<p>   非连续分配管理方式</p>
+<p>   允许一个程序分散的装入不相邻的内存分区</p>
+<p>   基本分页存储管理方式</p>
+<p>   设计思想</p>
+<p>   1、将主存空间划分为大小相等且固定的块，块相对较小，作为主存的基本单位，进程以块为单位进行空间申请</p>
+<p>   2、分页存储和固定分区技术很像，但是其分页相对于分区又很小，分页管理不会产生外部碎片，产生的内部碎片也非常的小</p>
+<p>   分页存储的基本概念</p>
+<p>   页面和页面大小</p>
+<p>   1、进程中的块&#x3D;页</p>
+<p>   2、内存中块&#x3D;框</p>
+<p>   3、进程申请主存空间，为每个页面分配主存中可用页框，页与页框一一对应</p>
+<p>   地址结构：页号（有多少页的编号）+页内偏移（页内存了多少东西）</p>
+<p>   页表</p>
+<p>   1、为了便于在内存中找到进程的每个页面对应的物理块，系统为每个进程建立一张页表，记录页面在内存中对应的物理块号，页表一般存放在内存中</p>
+<p>   2、页表项：页号+物理内存中块号</p>
+<p>   基本地址变换机构</p>
+<p>   基础地址变换结构图解</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%BA%E7%A1%80%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%84%E5%9B%BE%E8%A7%A3.png" alt="基础地址变换结构图解"></p>
+<p>   计算方式</p>
+<p>   1、页号P&#x3D;A&#x2F;L ，页内偏移量W&#x3D;A%L L：页面大小（即页内偏移量）</p>
+<p>   2、P&gt;&#x3D;M产生越界 P：页号，页表长度：M（从1开始）</p>
+<p>   3、页表中页号P对应的页表项地址B&#x3D;页表始址F+页号*页表项长度</p>
+<p>   4、计算E&#x3D;B*L+W</p>
+<p>   页表项大小的设计应当尽量一页正好装下所有的页表项</p>
+<p>   分页管理存在的问题</p>
+<p>   1、地址变换过程必须足够快，否则访存速率会降低</p>
+<p>   2、页表不能太大，否则会降低内存利用率</p>
+<p>   组成</p>
+<p>   1、设置一个页表寄存器（RTR），存放页表在内存中的起始地址F和页表长度M</p>
+<p>   2、页表的始址和页表长度放在进程控制块（PCB）中</p>
+<p>   具有快表的地址变换机构</p>
+<p>   可优化方向：如果页表放在内存中，取地址访问一次内存，按照地址取出数据访问一次内存，共需要访问两次内存</p>
+<p>   优化：地址变化机构中增加一个具有并性查找能力的高速缓存寄存器（快表），又称相联存储器（TLB）</p>
+<p>   访问一个逻辑地址的访存次数</p>
+<p>   基本地址变换结构：两次访存</p>
+<p>   具有快表的地址变换结构：一次或两次</p>
+<p>   具有快表的地址变换结构图解</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%85%B7%E6%9C%89%E5%BF%AB%E8%A1%A8%E7%9A%84%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%84%E5%9B%BE%E8%A7%A3.png" alt="具有快表的地址变换结构图解"></p>
+<p>   变换过程</p>
+<p>   1、CPU给出逻辑地址后，先查询快表中是否命中</p>
+<p>   2、若快表命中，直接从快表中该页对应的页框与页内偏移量拼接成物理地址</p>
+<p>   3、若快表未命中，再按照正常方式从页表查询响应页表项，并将该页表项存入快表中</p>
+<p>   两级页表</p>
+<p>   1、逻辑地址空间格式&#x3D;一级页号+二级页号+页内偏移</p>
+<p>   2、设计多级页表的时候，一定要保证顶级页表一定只有一个</p>
+<p>   3、建立多级页表的目的在于建立索引，不比浪费主存空间区存储无用的页表项，也不用盲目式的查询页表项</p>
+<p>   基本分段存储管理方式</p>
+<p>   分段</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%88%86%E6%AE%B5.png" alt="分段"></p>
+<p>   出发点</p>
+<p>   分页是从计算机角度考虑设计的，目的是为了内存的利用率，提高计算机性能，分页通过计算机硬件机制实现，对用户完全透明</p>
+<p>   分段是从用户和程序员的角度提出，满足方便编程，信息保护和共享，动态增长及动态链接等多方面的需要</p>
+<p>   分段</p>
+<p>   1、按照用户进程中的自然段划分逻辑空间</p>
+<p>   2、地址结构&#x3D;段号S+段内偏移量W</p>
+<p>   3、页式系统中，页号和页内偏移量对用户提供。段式系统中，段号和段内偏移量必须由用户显示的提供</p>
+<p>   段表</p>
+<p>   每个进程都有一张逻辑空间与内存空间映射的段白，这个段表项对应进程的一段，段表项记录该段在内存中的始址和长度</p>
+<p>   段表内容&#x3D;段号+段长+本段在主存中的地址</p>
+<p>   地址变换结构</p>
+<p>   地址变换结构图解</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%96%B9%E5%BC%8F.png" alt="地址变换方式"></p>
+<p>   1、逻辑地址A中取出段号S和段内偏移量W</p>
+<p>   2、比较段号S和段表长度M 若S&gt;&#x3D;M,则A产生越界中断，否则继续执行</p>
+<p>   3、段号S对应的段表项地址&#x3D;段表始址+段号S*段表项长度，从该段表项中取出段长 C，比较段内偏移量与C的大小判断是否越界</p>
+<p>   4、取出段表中该段的始址B，计算E&#x3D;B+W，用得到的物理地址E区访问内存</p>
+<p>   段的共享与保护</p>
+<p>   1、共享：两个作用的段表中响应表项指向被共享段的同一个物理副本来实现的，纯代码或者可重入代码以及不可修改的数据都可以被共享</p>
+<p>   2、保护机制：存取控制保护和地址越界保护</p>
+<p>   段页式管理方式</p>
+<p>   页式存储有效的提高利用率，分段存储能反映程序的逻辑结构并有利于段的分享，将这两种方式结合一下，这种二者结合方法经常在计算机理论中遇到</p>
+<p>   思想</p>
+<p>   1、作业的地址空间首先被分成若干逻辑段，每段由自己的段号</p>
+<p>   2、每个段分成若干固定的页</p>
+<p>   3、对内存空间的管理仍然和分页存储管理一样</p>
+<p>   地址结构&#x3D;段号S+页号P+页内偏移量W</p>
+<p>   为了实现地址变换，系统为每个进程建立了一张表，每个分段有一个页表。一个进程中段表只能有一个，页表有多个</p>
+<p>   地址变换方式</p>
+<p>   补充</p>
+<p>   1、不能被修改的代码称为纯代码或可重入代码</p>
+<p>   2、分段与分页的区别</p>
+<p>   1）分页对用户不可见，分段对用户可见</p>
+<p>   2）分页的地址空间是一维的，分段的地址空间是二维的</p>
+<p>   3）分页（单级页表），分段访问一个逻辑地址都需要两次访存，分段存储中也可以引入快表机构</p>
+<p>   4）分段更容易实现信息的共享和保护</p>
+<p>   3、分段和分页的优缺点</p>
+<p>   分页管理</p>
+<p>   1）优点：内存空间利用率高，不会产生外部碎片，只会有少量的页内碎片</p>
+<p>   2）缺点：不方便按照逻辑模块实现信息的共享和保护</p>
+<p>   分段管理</p>
+<p>   1）优点：很方便按照逻辑模块实现信息的共享和保护</p>
+<p>   2）缺点：如果段长过长，为其分配很大的连续空间会很不方便</p>
+<p>   段式管理会产生外部碎片</p>
+<h2 id="3-2虚拟内存管理"><a href="#3-2虚拟内存管理" class="headerlink" title="3.2虚拟内存管理"></a>3.2虚拟内存管理</h2><h3 id="虚拟内存的基本概念"><a href="#虚拟内存的基本概念" class="headerlink" title="虚拟内存的基本概念"></a>虚拟内存的基本概念</h3><p>   传统存储管理方式的特征</p>
+<p>   1、一次性：作业必须一次性全部装入内存后，才能开始运行</p>
+<p>   2、驻留性：作业装入内存后，一直驻留在内存中，任何部分不会被换出</p>
+<p>   局部性原理</p>
+<p>   时间局部性</p>
+<p>   1、一条指令执行后，短时间内指令可能被再次执行，数据被访问后，不久后数据可能再次被访问</p>
+<p>   2、原因：程序中存在大量的循环操作</p>
+<p>   3、时间局部性通过将最近使用的指令和数据存储在高速缓冲存储器中</p>
+<p>   空间局部性</p>
+<p>   1、一旦程序访问了某个存储单元，不久之后附近的存储单元也将被访问</p>
+<p>   2、原因：指令通常顺序存放，顺序执行的，数据一般也是以向量、数组、表等形式存储的</p>
+<p>   3、空间局部性使用较大的高速缓存，将预取机制继承到高速缓存控制逻辑中实现</p>
+<p>   虚拟存储器的定义和特征</p>
+<p>   基于局部性原理，将程序的一部分装入内存，一部分留在外存，需要的时候将外存内容调入内存</p>
+<p>   特征</p>
+<p>   1、多次行：作业在运行时，分多次调入内存运行</p>
+<p>   2、对换性：作业不必一直驻留在内存，允许作业在运行过程中进行换进换出</p>
+<p>   3、虚拟性：从逻辑上扩充内存容量，使用户看到的内存容量远大于实际的内存容量</p>
+<p>   虚拟内存技术的实现</p>
+<p>   建立在离散分配的内存管理方式上</p>
+<p>   实现方式：</p>
+<p>   1、请求分页存储管理</p>
+<p>   2、请求分段存储管理</p>
+<p>   3、请求段页式存储管理</p>
+<p>   硬件支持</p>
+<p>   1、一定容量的内存和外存</p>
+<p>   2、页表机制</p>
+<p>   3、中断机制</p>
+<p>   4、地址表换机制</p>
+<h3 id="请求分页管理方式"><a href="#请求分页管理方式" class="headerlink" title="请求分页管理方式"></a>请求分页管理方式</h3><p>   系统建立在基本分页系统基础之上，为了支持虚拟存储器功能二增加了请求调页功能和页面置换功能</p>
+<p>   页表机制</p>
+<p>   1、组成：页号、物理块号、状态位P、访问字段A、修改位M、外存地址</p>
+<p>   2、状态位：当前页是否已经调入内存</p>
+<p>   3、访问字段A：记录本页在一段时间内被访问的次数</p>
+<p>   4、修改位M：记录本页是否被修改过</p>
+<p>   5、外存地址：指出该页在外存上的地址</p>
+<p>   缺页中断机构</p>
+<p>   当访问页面不在内存时就会产生缺页中断</p>
+<p>   特点</p>
+<p>   指令执行期间产生中断，而不是指令执行之后产生中断和处理中断</p>
+<p>   一条指令在执行期间，可能产生多次缺页中断</p>
+<p>   地址变换机构</p>
+<p>   检索快表，找到访问页，修改页表项中的访问位，利用页表项中给出的物理块号和页内地址形成物理地址</p>
+<p>   没用找到该页的页表项，区内存中寻找页表，看该页是否已经调入内存，没用调入则产生缺页中断，请求外存把该页调入内存</p>
+<h3 id="注意！！！"><a href="#注意！！！" class="headerlink" title="注意！！！"></a>注意！！！</h3><p>   虚拟内存的最大容量是由计算机的地址结构（CPU寻址范围）确定的</p>
+<p>   虚拟内存的实际容量&#x3D;min（内存和外存容量之和，CPU寻址范围）</p>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>   1、最佳置换算法</p>
+<p>   选择永不使用或者最长时间内不再访问的页面进行淘汰，但是现实中是无法预知的</p>
+<p>   优点：缺页率最小、性能最好</p>
+<p>   2、先进先出页面置换算法</p>
+<p>   1、优先淘汰最早进入的页面</p>
+<p>   2、优点：实现简单</p>
+<p>   3、缺点：与进程的实际运行规律不匹配</p>
+<p>   4、Beledy异常：增大分配的物理块数但是故障数不减反增</p>
+<p>   3、最近最久未使用算法</p>
+<p>   1、选择最近最长时间没用被访问的页面进行淘汰，每个页面设置一个访问字段，用来标识上次被访问到现在经历的时间</p>
+<p>   2、优点：性能好</p>
+<p>   3、缺点：实现复杂，需要寄存器和栈的硬件支持</p>
+<p>   4、时钟算法</p>
+<p>   1、像一个时钟一样转圈，每个页面设置一个使用位，遇到没有被使用的就会将页面换出，然后将使用位置0，如果遇到使用的就会将使用位置0，然后扫描下一个</p>
+<p>   2、优点：性能接近于最佳置换算法</p>
+<p>   3、缺点：实现复杂，开销大</p>
+<p>   4、改进时钟算法</p>
+<p>   （使用位，修改位），最多扫描四次</p>
+<h3 id="页面分配策略"><a href="#页面分配策略" class="headerlink" title="页面分配策略"></a>页面分配策略</h3><p>   驻留集：给一个进程的分配的物理页框的集和就是这个进程的驻留集</p>
+<p>   考虑因素</p>
+<p>   1、分配给一个进程的存储量越小，任何时候驻留在主存中的进程数就越多，可以提高处理机的时间利用率</p>
+<p>   2、一个进程在主存中的页数过少，页错误率就会相对较高</p>
+<p>   3、页数过多，对进程的错误率页不会产生过多的影响</p>
+<p>   分配策略</p>
+<p>   1、固定分配局部置换</p>
+<p>   1）每个进程分配固定物理块数，缺页的时候就进行换页</p>
+<p>   2）难以确定每个进程应该分配的物理块数</p>
+<p>   3）太多导致资源利用率下降，太少导致频繁缺页中断</p>
+<p>   2、可变分配全局置换</p>
+<p>   1、进程分配一定物理块，系统自身保留一定空闲物理块，如果进程缺页，就对该进程分配新的物理块</p>
+<p>   2）优点，最容易实现，动态调整物理块分配</p>
+<p>   3）缺点：如果盲目分配物理块，就会导致多道程序并发能力下降</p>
+<p>   3、可变分配局部置换</p>
+<p>   1）根据进程的缺页情况，对物理块进行动态分配，如果频繁缺页，就对其多配分物理块，如果缺页率特别低么就减少物理块</p>
+<p>   2）优点，保持了系统的多道程序的并发能力</p>
+<p>   3）缺点：增大了开销，实现复杂</p>
+<p>   调入页面的实际</p>
+<p>   预调页策略：将预计不久被访问的页面调入，成功了约为50%</p>
+<p>   请求调页策略：当进程提出缺页的时候，再按照一定策略进行调页</p>
+<p>   从何处调入页</p>
+<p>   1、拥有足够的对换空间：可以全部从对换区调入所需页面，提高调页速度</p>
+<p>   2、缺少足够的对换区间：不会被修改的文件从文件区调入，可能被修改的部分换入对换区，再从对换区调入</p>
+<p>   3、UNIX方式：进程相关文件访问文件区，没有运行的页面从文件调入，曾经运行过但又被换出的页面放在对换区</p>
+<h3 id="抖动"><a href="#抖动" class="headerlink" title="抖动"></a>抖动</h3><p>   1、刚换出的页面又要换入内存</p>
+<p>   2、原因</p>
+<p>   分配的物理帧数不足（主要元婴）</p>
+<p>   置换算法不当</p>
+<h3 id="工作集"><a href="#工作集" class="headerlink" title="工作集"></a>工作集</h3><p>   某段时间内，进程要访问的页面集和</p>
+<p>   原理</p>
+<p>   1、操作系统跟踪每个进程的工作集，并为进程分配大于其工作集的物理块</p>
+<p>   2、落入工作集的页面需要调入驻留集中，落在工作集外面的页面可以从驻留集中换出</p>
+<p>   3、若还有空闲物理块，可以再调入一个进程到内存以增加多道程序数</p>
+<p>   4、若所有进程的工作集之和超过了可用物理块的总数，操作系统就会暂停一个进程，并将其页面调出，然后分配给其他进程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-16513308254251.png" alt="内存管理"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/04/18/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="第三章:内存管理">https://wjjhui.github.io/2022/04/18/第三章：内存管理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="prev" title="第二章:进程管理">
+      <i class="fa fa-chevron-left"></i> 第二章:进程管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/25/%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/" rel="next" title="第四章:文件管理">
+      第四章:文件管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">3.1内存管理概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%92%8C%E8%A6%81%E6%B1%82"><span class="nav-number">1.1.</span> <span class="nav-text">内存管理的基本原理和要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E4%B8%8E%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">覆盖与交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">连续分配管理方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">3.2虚拟内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">虚拟内存的基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%88%86%E9%A1%B5%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">请求分页管理方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%EF%BC%81%EF%BC%81%EF%BC%81"><span class="nav-number">2.3.</span> <span class="nav-text">注意！！！</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">2.4.</span> <span class="nav-text">页面置换算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5"><span class="nav-number">2.5.</span> <span class="nav-text">页面分配策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%96%E5%8A%A8"><span class="nav-number">2.6.</span> <span class="nav-text">抖动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E9%9B%86"><span class="nav-number">2.7.</span> <span class="nav-text">工作集</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

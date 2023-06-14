@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第二章:运算方法与运算器">
+<meta property="og:url" content="https://wjjhui.github.io/2022/05/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95%E5%9B%BE%E8%A7%A3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%A1%A5%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95%E5%9B%BE%E8%A7%A3.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E6%81%A2%E5%A4%8D%E4%BD%99%E6%95%B0%E6%B3%95%EF%BC%88%E6%89%8B%E7%AE%97%EF%BC%89.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%A1%A5%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/IEEE754.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8.png">
+<meta property="article:published_time" content="2022-05-11T13:24:52.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:43:50.459Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95%E5%9B%BE%E8%A7%A3.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/05/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第二章:运算方法与运算器 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/05/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第二章:运算方法与运算器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-11 21:24:52" itemprop="dateCreated datePublished" datetime="2022-05-11T21:24:52+08:00">2022-05-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:43:50" itemprop="dateModified" datetime="2022-05-15T18:43:50+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="2-1定点数的表示"><a href="#2-1定点数的表示" class="headerlink" title="2.1定点数的表示"></a>2.1定点数的表示</h2><h3 id="有符号与无符号"><a href="#有符号与无符号" class="headerlink" title="有符号与无符号"></a>有符号与无符号</h3><p>无符号数：整个机器字长的全部二进制均为数值位</p>
+<p>有符号数：最高位的0&#x2F;1表示正&#x2F;负</p>
+<h3 id="机器数定点表示"><a href="#机器数定点表示" class="headerlink" title="机器数定点表示"></a>机器数定点表示</h3><p>定点小数：定点小数是纯小数，约定小数点位置在符号位之后</p>
+<p>定点整数：定点整数是纯整数，小数点位置在有效数值部分的最低位后</p>
+<h3 id="机器数表示方法"><a href="#机器数表示方法" class="headerlink" title="机器数表示方法"></a>机器数表示方法</h3><p>原码表示：最高位位符号位，其余的为数值位</p>
+<p>反码表示：符号位不变，数值位取反。</p>
+<p>补码表示：符号位不变，数值位取反+1，实现加法器做减法</p>
+<p>移码表示：符号位取反，数值位不变，用于真值比较大小</p>
+<h2 id="2-2定点数的运算"><a href="#2-2定点数的运算" class="headerlink" title="2.2定点数的运算"></a>2.2定点数的运算</h2><h3 id="移位运算"><a href="#移位运算" class="headerlink" title="移位运算"></a>移位运算</h3><p>算数移位</p>
+<p>1、正数：移位补0</p>
+<p>2、负数</p>
+<p>#原码：补0</p>
+<p>#反码：补1</p>
+<p>#补码：左移补0，右移补1</p>
+<p>符号位不参与</p>
+<p>逻辑移位</p>
+<p>将操作数看作无符号数</p>
+<p>左移或右移都补0</p>
+<p>循环移位</p>
+<p>带进位标志位的循环移位</p>
+<p>不带进位标志位的循环移位</p>
+<h3 id="原码加减"><a href="#原码加减" class="headerlink" title="原码加减"></a>原码加减</h3><p>加法准则</p>
+<p>符号相同：绝对值相加，符号不变</p>
+<p>符号不同，绝对值大的间去绝对值小的</p>
+<p>减法准则</p>
+<p>减去一个数&#x3D;加上这个数的负数</p>
+<h3 id="补码加法"><a href="#补码加法" class="headerlink" title="补码加法"></a>补码加法</h3><p>[A+B]补 &#x3D; [A]补 + [B]补</p>
+<p>[A-B]补 &#x3D; [A]补 + [-B]补</p>
+<h3 id="溢出判断"><a href="#溢出判断" class="headerlink" title="溢出判断"></a>溢出判断</h3><p>溢出判断：01为正溢出，10为负溢出</p>
+<p>1、一位符号位：参加运算的两个符号数相同，但结果符号发生变化，即发生了溢出</p>
+<p>2、双符号位：01正溢出，10负溢出</p>
+<p>3、单符号位与数据进位：符号位与最高位进位相同，则无溢出</p>
+<h3 id="原码一位乘法"><a href="#原码一位乘法" class="headerlink" title="原码一位乘法"></a>原码一位乘法</h3><p>符号位：两个符号位异或</p>
+<p>累加次数：n</p>
+<p>右移补0</p>
+<p>符号位不参与运算</p>
+<p>原码一位乘法图解</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95%E5%9B%BE%E8%A7%A3.png" alt="原码一位乘法图解"></p>
+<h3 id="补码一位乘法"><a href="#补码一位乘法" class="headerlink" title="补码一位乘法"></a>补码一位乘法</h3><p>累加次数：n+1</p>
+<p>负数右移补1</p>
+<p>符号位参与运算</p>
+<p>补码一位乘法图解</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1.png" alt="1"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%A1%A5%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95%E5%9B%BE%E8%A7%A3.png" alt="补码一位乘法图解"></p>
+<h3 id="原码除法"><a href="#原码除法" class="headerlink" title="原码除法"></a>原码除法</h3><h4 id="恢复余数"><a href="#恢复余数" class="headerlink" title="恢复余数"></a>恢复余数</h4><p>符号位不参与运算</p>
+<p>左移补0</p>
+<p>每次减法之后判断余数是否为负数，若为负数则恢复</p>
+<p>若最终余数为负数，则需要恢复余数</p>
+<p>原码除法：恢复余数法（手算）</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E6%81%A2%E5%A4%8D%E4%BD%99%E6%95%B0%E6%B3%95%EF%BC%88%E6%89%8B%E7%AE%97%EF%BC%89.png" alt="原码除法：恢复余数法（手算）"></p>
+<h4 id="不恢复余数（加减交替法）"><a href="#不恢复余数（加减交替法）" class="headerlink" title="不恢复余数（加减交替法）"></a>不恢复余数（加减交替法）</h4><p>符号位不参与运算</p>
+<p>左移补0</p>
+<p>余数符号位为1商0，符号位为0则商1</p>
+<p>原码除法：加减交替法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8E%9F%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95.png" alt="原码除法：加减交替法"></p>
+<h3 id="补码除法（加减交替法）"><a href="#补码除法（加减交替法）" class="headerlink" title="补码除法（加减交替法）"></a>补码除法（加减交替法）</h3><p>符号位参与运算，采用双符号位</p>
+<p>除数与余数同号商1，异号商0</p>
+<p>商末位恒置1</p>
+<p>补码除法：加减交替法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%A1%A5%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%9A%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95.png" alt="补码除法：加减交替法"></p>
+<h2 id="2-3浮点数的表示"><a href="#2-3浮点数的表示" class="headerlink" title="2.3浮点数的表示"></a>2.3浮点数的表示</h2><h3 id="表示格式"><a href="#表示格式" class="headerlink" title="表示格式"></a>表示格式</h3><p>1、阶码：整数，阶符与阶码的位数共同反映浮点数的表示范围与小数点的实际位置</p>
+<p>2、数符：表示浮点数的符号</p>
+<p>3、尾数：尾数的位数表示浮点数的精度</p>
+<h3 id="规格化浮点数"><a href="#规格化浮点数" class="headerlink" title="规格化浮点数"></a>规格化浮点数</h3><p>左规：尾数算术左移一位，阶码减1</p>
+<p>右规：尾数算术右移一位，阶码加1，可能出现溢出</p>
+<h3 id="原码规格化"><a href="#原码规格化" class="headerlink" title="原码规格化"></a>原码规格化</h3><p>正数：0.1xxxx</p>
+<p>负数：1.1xxx</p>
+<p>尾数最高一位不为0，基数4最高两位不为0，基数5最高三位不为0</p>
+<h3 id="补码规格化"><a href="#补码规格化" class="headerlink" title="补码规格化"></a>补码规格化</h3><p>正数：0.1xxx</p>
+<p>负数：1.0xxx</p>
+<h3 id="IEEE754"><a href="#IEEE754" class="headerlink" title="IEEE754"></a>IEEE754</h3><p>阶码&#x3D;真值+偏置值</p>
+<h4 id=""><a href="#" class="headerlink" title=""></a><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/IEEE754.png" alt="IEEE754"></h4><h2 id="2-4浮点数的加减运算"><a href="#2-4浮点数的加减运算" class="headerlink" title="2.4浮点数的加减运算"></a>2.4浮点数的加减运算</h2><h3 id="运算步骤"><a href="#运算步骤" class="headerlink" title="运算步骤"></a>运算步骤</h3><p>1、对阶：小阶向大阶对齐，尾数右移，阶码+1</p>
+<p>2、尾数求和：按照定点数加减规则运算</p>
+<p>3、规格化：最高数值位与符号位不同即为规格化形式</p>
+<p>4、舍入：</p>
+<p>0舍1入法</p>
+<p>恒置1法</p>
+<p>5、溢出判断：</p>
+<p>只有右规，仍然溢出，此时才是真正溢出</p>
+<p>上溢出：进入中断处理</p>
+<p>下溢出：按机器零处理</p>
+<p>6、强制类型转换</p>
+<p>char–&gt; 在前面补0</p>
+<p>int&lt;—-&gt;unsigned 彼此都可能因为溢出丢失数据</p>
+<p>int&lt;—&gt;float</p>
+<h3 id="边界对齐"><a href="#边界对齐" class="headerlink" title="边界对齐"></a>边界对齐</h3><p>现代计算机通常是字节编址，即每个字节对应1个地址</p>
+<p>通常也支持按字、半字、字节寻址</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8.png" alt="运算方法与运算器"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/05/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8/" title="第二章:运算方法与运算器">https://wjjhui.github.io/2022/05/11/第二章：运算方法与运算器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/" rel="prev" title="第一章:计算机系统的概述">
+      <i class="fa fa-chevron-left"></i> 第一章:计算机系统的概述
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/15/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/" rel="next" title="第三章:存储系统">
+      第三章:存储系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1%E5%AE%9A%E7%82%B9%E6%95%B0%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">2.1定点数的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E4%B8%8E%E6%97%A0%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.1.</span> <span class="nav-text">有符号与无符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E6%95%B0%E5%AE%9A%E7%82%B9%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">机器数定点表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E6%95%B0%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">机器数表示方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2%E5%AE%9A%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">2.2定点数的运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">2.1.</span> <span class="nav-text">移位运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E5%8A%A0%E5%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">原码加减</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E5%8A%A0%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">补码加法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E5%88%A4%E6%96%AD"><span class="nav-number">2.4.</span> <span class="nav-text">溢出判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95"><span class="nav-number">2.5.</span> <span class="nav-text">原码一位乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E6%B3%95"><span class="nav-number">2.6.</span> <span class="nav-text">补码一位乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E9%99%A4%E6%B3%95"><span class="nav-number">2.7.</span> <span class="nav-text">原码除法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E4%BD%99%E6%95%B0"><span class="nav-number">2.7.1.</span> <span class="nav-text">恢复余数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E6%81%A2%E5%A4%8D%E4%BD%99%E6%95%B0%EF%BC%88%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95%EF%BC%89"><span class="nav-number">2.7.2.</span> <span class="nav-text">不恢复余数（加减交替法）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E9%99%A4%E6%B3%95%EF%BC%88%E5%8A%A0%E5%87%8F%E4%BA%A4%E6%9B%BF%E6%B3%95%EF%BC%89"><span class="nav-number">2.8.</span> <span class="nav-text">补码除法（加减交替法）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">3.</span> <span class="nav-text">2.3浮点数的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">表示格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E6%A0%BC%E5%8C%96%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">规格化浮点数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E8%A7%84%E6%A0%BC%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">原码规格化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E8%A7%84%E6%A0%BC%E5%8C%96"><span class="nav-number">3.4.</span> <span class="nav-text">补码规格化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IEEE754"><span class="nav-number">3.5.</span> <span class="nav-text">IEEE754</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.5.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E5%8A%A0%E5%87%8F%E8%BF%90%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">2.4浮点数的加减运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.1.</span> <span class="nav-text">运算步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E5%AF%B9%E9%BD%90"><span class="nav-number">4.2.</span> <span class="nav-text">边界对齐</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

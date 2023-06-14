@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第一章:计算机系统的概述">
+<meta property="og:url" content="https://wjjhui.github.io/2022/05/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0.png">
+<meta property="article:published_time" content="2022-05-01T12:50:18.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:44:23.841Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/05/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第一章:计算机系统的概述 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/05/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第一章:计算机系统的概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-01 20:50:18" itemprop="dateCreated datePublished" datetime="2022-05-01T20:50:18+08:00">2022-05-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:44:23" itemprop="dateModified" datetime="2022-05-15T18:44:23+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-1计算机发展历程"><a href="#1-1计算机发展历程" class="headerlink" title="1.1计算机发展历程"></a>1.1计算机发展历程</h2><h3 id="计算机的硬件发展"><a href="#计算机的硬件发展" class="headerlink" title="计算机的硬件发展"></a>计算机的硬件发展</h3><p>第一代：电子管时代</p>
+<p>第二代：晶体管时代</p>
+<p>第三代：中小规模集成电路时代</p>
+<p>第四代：超大规模集成电路时代</p>
+<p>元件的更新变化</p>
+<p>摩尔定律：18个月晶体管翻一番</p>
+<p>半导体存储器不断发展</p>
+<p>微处理器不断地发展</p>
+<h3 id="计算机软件发展"><a href="#计算机软件发展" class="headerlink" title="计算机软件发展"></a>计算机软件发展</h3><p>面向机器：机器语言和汇编语言</p>
+<p>高级语言：FORTRAN-&gt;PASCAL-&gt;C++-&gt;…</p>
+<h3 id="计算机的分类和发展方向"><a href="#计算机的分类和发展方向" class="headerlink" title="计算机的分类和发展方向"></a>计算机的分类和发展方向</h3><p>电子计算机</p>
+<p>电子模拟计算机</p>
+<p>电子数字计算机</p>
+<p>数字计算机</p>
+<p>专用计算机</p>
+<p>通用计算机</p>
+<h2 id="1-2计算机体系结构"><a href="#1-2计算机体系结构" class="headerlink" title="1.2计算机体系结构"></a>1.2计算机体系结构</h2><h3 id="计算机系统的构成"><a href="#计算机系统的构成" class="headerlink" title="计算机系统的构成"></a>计算机系统的构成</h3><p>硬件和软件</p>
+<p>功能实现：硬件和软件再逻辑上是等效的，硬件实现效率高但成本高</p>
+<h3 id="计算机的硬件的基本组成"><a href="#计算机的硬件的基本组成" class="headerlink" title="计算机的硬件的基本组成"></a>计算机的硬件的基本组成</h3><p>早期 冯·诺依曼</p>
+<p>组成：运算器、存储器、控制器、输入设备、输出设备</p>
+<p>指令与数据共存与存储器，按地址访问</p>
+<p>指令与数据以二进制代码构成</p>
+<p>指令组成：操作码与地址吗</p>
+<p>指令顺序存放，顺序执行</p>
+<p>运算器为中心，输入输出设备通过运算器与存储器传送数据</p>
+<p>“存储程序”：讲指令以二进制代码的形式事先输入计算机的主存储器，然后再执行</p>
+<p>现代计算机体系结构</p>
+<p>存储器为中心</p>
+<p>I&#x2F;O操作尽可能的绕开CPU，实现I&#x2F;O设备与存储器直接完成，从而提高运行效率</p>
+<h3 id="计算机软件的分类"><a href="#计算机软件的分类" class="headerlink" title="计算机软件的分类"></a>计算机软件的分类</h3><p>以功能分类</p>
+<p>系统软件</p>
+<p>应用软件</p>
+<p>语言分类</p>
+<p>机器语言</p>
+<p>汇编语言</p>
+<p>高级语言</p>
+<h3 id="计算机工作过程"><a href="#计算机工作过程" class="headerlink" title="计算机工作过程"></a>计算机工作过程</h3><p>具体步骤</p>
+<p>1、程序、数据装入主存</p>
+<p>2、从程序起始地址开始运行</p>
+<p>3、程序首地址取出指令-&gt;指令译码-&gt;完成功能并计算下一条指令地址</p>
+<p>4、新得到的指令地址读出下一条指令，直到程序结束</p>
+<p>信息流程</p>
+<p>取指令：PC–&gt;MAR–&gt;M–&gt;MDR–&gt;R</p>
+<p>分析指令:OP(IR)–&gt;CU</p>
+<p>执行指令:AD(IR)–&gt;MAR–&gt;M–&gt;MDR–&gt;ACC</p>
+<h3 id="计算机系统得多级层次结构"><a href="#计算机系统得多级层次结构" class="headerlink" title="计算机系统得多级层次结构"></a>计算机系统得多级层次结构</h3><p>1、虚拟机器（高级语言机器）</p>
+<p>2、虚拟机器（汇编语言机器）</p>
+<p>3、虚拟机器（操作系统机器）</p>
+<p>4、—-软硬件交互界面—-</p>
+<p>5、传统机器（使用机器语言的机器）</p>
+<p>6、微程序机器（微指令系统）</p>
+<h3 id="各硬件"><a href="#各硬件" class="headerlink" title="各硬件"></a>各硬件</h3><p>主存</p>
+<p>存储体：存储元、存储单元、存储字、存储字长、地址</p>
+<p>  MAR：地址寄存器，用于指明要读&#x2F;写哪个存储单元</p>
+<p>  MDR：数据寄存器，存放操作数，用于暂存要读&#x2F;写的数据</p>
+<p>运算器</p>
+<p>  ACC：累加计数器，存放操作数、运算的结果</p>
+<p>  MQ：乘商寄存器，进行乘，除法时的寄存器</p>
+<p>  X：通用寄存器，存放操作数</p>
+<p>  ALU：算术逻辑运算单元，用电路实现各种式算法运算、逻辑运算</p>
+<p>控制器</p>
+<p>  PC：程序计数器，存放下一条指令的地址</p>
+<p>  IR：指令寄存器，存放当前执行的指令</p>
+<p>  CU：控制单元，分析指令，给出控制信号</p>
+<p>工作过程</p>
+<p>初始：指令、数据存入主存，PC指向第一条指令</p>
+<p>从主存中取出指令放入IR、PC自动加1，CU分析指令、CU指挥其他部件执行指令</p>
+<p>1.3计算机性能指标</p>
+<h3 id="机器字长"><a href="#机器字长" class="headerlink" title="机器字长"></a>机器字长</h3><p>计算机进行一次整数运算课处理的二进制位数</p>
+<p>1、受到CPU寄存器位、加法器影响</p>
+<p>2、一般情况下机器字长等于内部寄存器大小</p>
+<p>3、字长越长，表示范围越大，精度越高</p>
+<h3 id="数据通路带宽"><a href="#数据通路带宽" class="headerlink" title="数据通路带宽"></a>数据通路带宽</h3><p>数据总线一次性所能传送信息的位数</p>
+<h3 id="主存容量"><a href="#主存容量" class="headerlink" title="主存容量"></a>主存容量</h3><p>主存储器的最大容量，MAR位数反应了存储单元的个数，反映了最大寻址范围</p>
+<h3 id="运算速度"><a href="#运算速度" class="headerlink" title="运算速度"></a>运算速度</h3><p>吞吐量</p>
+<p>单位时间内处理请求的数量</p>
+<p>取决于主存的存取周期</p>
+<p>响应时间</p>
+<p>用于发送请求，然后系统对请求做出响应并且获得所得结果的等待时间</p>
+<h4 id="CPU时钟周期"><a href="#CPU时钟周期" class="headerlink" title="CPU时钟周期"></a>CPU时钟周期</h4><p>节拍脉冲或者是T周期，1&#x2F;主频</p>
+<p>  CPU的最小时间单位，每个动做至少需要一个时钟周期</p>
+<p>主频</p>
+<p>机器内部主时钟的频率，衡量机器速度的重要参数</p>
+<h4 id="CPI"><a href="#CPI" class="headerlink" title="CPI"></a>CPI</h4><p>执行一条指令所需要的时钟周期数</p>
+<h4 id="CPU执行时间"><a href="#CPU执行时间" class="headerlink" title="CPU执行时间"></a>CPU执行时间</h4><p>运行一个程序所花时间</p>
+<p>影响因素：主频、指令条数、每条指令的执行周期</p>
+<p>计算能力</p>
+<p>  MIPS：每秒执行多少条百万指令</p>
+<p>  MFLOPS：每秒执行多少百万次浮点运算</p>
+<p>  GFLOPS：每秒执行多少十亿次浮点运算</p>
+<p>  TFLOPS：每秒执行多少万亿浮点运算</p>
+<h2 id="1-3注意问题"><a href="#1-3注意问题" class="headerlink" title="1.3注意问题"></a>1.3注意问题</h2><h3 id="1、翻译程序、解释程序、汇编程序、编译程序的区别和联系"><a href="#1、翻译程序、解释程序、汇编程序、编译程序的区别和联系" class="headerlink" title="1、翻译程序、解释程序、汇编程序、编译程序的区别和联系"></a>1、翻译程序、解释程序、汇编程序、编译程序的区别和联系</h3><p>翻译程序程序有两种：一种是编译程序，它将高级语言源程序一次全部翻译成目标程序，只要源程序不变，就无需重新翻译。另一种是解释程序，它将源程序的一条语句翻译成对应的机器目标代码，并立即执行，然后翻译下一条源程序语句并执行，直到所有源程序语句全部被翻译并执行完。所以解释程序的执行过程是翻译一句执行一句，并不会生成目标程序</p>
+<p>汇编程序也是一种语言翻译程序，它把汇编语言源程序翻译为机器语言程序</p>
+<h3 id="2、字、字长、机器字长、指令字长、存储字长的区别和联系"><a href="#2、字、字长、机器字长、指令字长、存储字长的区别和联系" class="headerlink" title="2、字、字长、机器字长、指令字长、存储字长的区别和联系"></a>2、字、字长、机器字长、指令字长、存储字长的区别和联系</h3><p>通常说的“某16位或32位机器”中，16、32指的是字长，也就是机器字长。所谓字长，通常是指CPU内部用于整数运算得数据通路的宽度，因此字长等于CPU内部用于整数运算的运算器位数和通用寄存器宽度，它反映了计算机处理信息的能力。字和字长的概念不同。字用来表示被处理信息的单位，用来度量数据类型的宽度。</p>
+<p>指令字长：一个指令字中包含的二进制代码的位数</p>
+<p>存储字长：一个存储单元存储的二进制代码的长度</p>
+<p>它们都必须是字节的整数倍</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0.png" alt="计算机系统的概述"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/05/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/" title="第一章:计算机系统的概述">https://wjjhui.github.io/2022/05/01/第一章：计算机系统的概述/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/30/%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9AIO%E7%AE%A1%E7%90%86/" rel="prev" title="第五章:IO管理">
+      <i class="fa fa-chevron-left"></i> 第五章:IO管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/11/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E4%B8%8E%E8%BF%90%E7%AE%97%E5%99%A8/" rel="next" title="第二章:运算方法与运算器">
+      第二章:运算方法与运算器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">1.1计算机发展历程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E7%A1%AC%E4%BB%B6%E5%8F%91%E5%B1%95"><span class="nav-number">1.1.</span> <span class="nav-text">计算机的硬件发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%BD%AF%E4%BB%B6%E5%8F%91%E5%B1%95"><span class="nav-number">1.2.</span> <span class="nav-text">计算机软件发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E5%88%86%E7%B1%BB%E5%92%8C%E5%8F%91%E5%B1%95%E6%96%B9%E5%90%91"><span class="nav-number">1.3.</span> <span class="nav-text">计算机的分类和发展方向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">1.2计算机体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%84%E6%88%90"><span class="nav-number">2.1.</span> <span class="nav-text">计算机系统的构成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84%E7%A1%AC%E4%BB%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="nav-number">2.2.</span> <span class="nav-text">计算机的硬件的基本组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">2.3.</span> <span class="nav-text">计算机软件的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">计算机工作过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%BE%97%E5%A4%9A%E7%BA%A7%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">计算机系统得多级层次结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A1%AC%E4%BB%B6"><span class="nav-number">2.6.</span> <span class="nav-text">各硬件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%97%E9%95%BF"><span class="nav-number">2.7.</span> <span class="nav-text">机器字长</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E5%B8%A6%E5%AE%BD"><span class="nav-number">2.8.</span> <span class="nav-text">数据通路带宽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%AD%98%E5%AE%B9%E9%87%8F"><span class="nav-number">2.9.</span> <span class="nav-text">主存容量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E9%80%9F%E5%BA%A6"><span class="nav-number">2.10.</span> <span class="nav-text">运算速度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU%E6%97%B6%E9%92%9F%E5%91%A8%E6%9C%9F"><span class="nav-number">2.10.1.</span> <span class="nav-text">CPU时钟周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CPI"><span class="nav-number">2.10.2.</span> <span class="nav-text">CPI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="nav-number">2.10.3.</span> <span class="nav-text">CPU执行时间</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3%E6%B3%A8%E6%84%8F%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">1.3注意问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%BF%BB%E8%AF%91%E7%A8%8B%E5%BA%8F%E3%80%81%E8%A7%A3%E9%87%8A%E7%A8%8B%E5%BA%8F%E3%80%81%E6%B1%87%E7%BC%96%E7%A8%8B%E5%BA%8F%E3%80%81%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB"><span class="nav-number">3.1.</span> <span class="nav-text">1、翻译程序、解释程序、汇编程序、编译程序的区别和联系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%AD%97%E3%80%81%E5%AD%97%E9%95%BF%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%97%E9%95%BF%E3%80%81%E6%8C%87%E4%BB%A4%E5%AD%97%E9%95%BF%E3%80%81%E5%AD%98%E5%82%A8%E5%AD%97%E9%95%BF%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB"><span class="nav-number">3.2.</span> <span class="nav-text">2、字、字长、机器字长、指令字长、存储字长的区别和联系</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

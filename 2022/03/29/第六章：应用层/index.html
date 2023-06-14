@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第六章:应用层">
+<meta property="og:url" content="https://wjjhui.github.io/2022/03/29/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%B1%82%E6%AC%A1%E5%9F%9F%E5%90%8D%E7%A9%BA%E9%97%B4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E5%99%A8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/FTP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%9A%84%E6%94%B6%E5%8F%91%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%85%B8%E5%9E%8B%E7%9A%84%E9%82%AE.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E9%80%9A%E4%BF%A1%E9%98%B6%E6%AE%B5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/HTTP%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%BA%94%E7%94%A8%E5%B1%82.png">
+<meta property="article:published_time" content="2022-03-29T14:06:20.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:43:52.923Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%B1%82%E6%AC%A1%E5%9F%9F%E5%90%8D%E7%A9%BA%E9%97%B4.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/03/29/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第六章:应用层 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/03/29/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第六章:应用层
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-29 22:06:20" itemprop="dateCreated datePublished" datetime="2022-03-29T22:06:20+08:00">2022-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:43:52" itemprop="dateModified" datetime="2022-05-15T18:43:52+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>2 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="6-1网络应用模型"><a href="#6-1网络应用模型" class="headerlink" title="6.1网络应用模型"></a>6.1网络应用模型</h2><h3 id="客户-x2F-服务器模型"><a href="#客户-x2F-服务器模型" class="headerlink" title="客户&#x2F;服务器模型"></a>客户&#x2F;服务器模型</h3><p>在客户&#x2F;服务器模型（c&#x2F;s）中，服务器总是打开，接收许多客户机的请求</p>
+<p>工作流程</p>
+<p>1、服务器处于被请求的状态</p>
+<p>2、客户机发出服务请求，并等待接收结果</p>
+<p>3、服务器收到请求后，分析请求，进行必要的请求，得到结果并发送给客户机</p>
+<h3 id="P2P模型"><a href="#P2P模型" class="headerlink" title="P2P模型"></a>P2P模型</h3><p>任意一对计算机都可以直接互相通信，每台计算机即作为服务器又作为客户机</p>
+<p>优点</p>
+<p>​    1、减轻了服务器的计算压力，消除了对某个服务器的完全依赖，提高了系统效率和资源利用率</p>
+<p>​    2、多个客户机之间可以直接共享文档</p>
+<p>​    3、可扩展性好，传统服务器有响应和带宽的限制，只能接收一定的数量</p>
+<p>​    4、网络健壮性好，单个节点的失效不会影响其他节点</p>
+<p>缺点</p>
+<p>​    1、占用较多的内存，影响整机的速度</p>
+<p>​    2、P2P下载会对硬盘造成较大的损伤</p>
+<p>​    3、使网路变得非常拥塞</p>
+<h2 id="6-2域名服务系统（DNS）"><a href="#6-2域名服务系统（DNS）" class="headerlink" title="6.2域名服务系统（DNS）"></a>6.2域名服务系统（DNS）</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>1、域名系统是因特网使用的命名系统，用来将主机名转换为便于机器处理的IP地址</p>
+<p>2、DNS系统采用 客户&#x2F;服务器模型</p>
+<p>3、协议运行在UDP之上，使用53号端口</p>
+<p>4、控制连接在整个会话期间一直保持打开状态（21号端口）</p>
+<h3 id="层次域名空间"><a href="#层次域名空间" class="headerlink" title="层次域名空间"></a>层次域名空间</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%B1%82%E6%AC%A1%E5%9F%9F%E5%90%8D%E7%A9%BA%E9%97%B4.png" alt="层次域名空间"></p>
+<h3 id="域名服务器"><a href="#域名服务器" class="headerlink" title="域名服务器"></a>域名服务器</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E5%99%A8.png" alt="域名服务器"></p>
+<h3 id="域名解析过程"><a href="#域名解析过程" class="headerlink" title="域名解析过程"></a>域名解析过程</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B.png" alt="域名解析过程"></p>
+<h2 id="6-3文件传输协议（FTP）"><a href="#6-3文件传输协议（FTP）" class="headerlink" title="6.3文件传输协议（FTP）"></a>6.3文件传输协议（FTP）</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>1、FTP提供了交互的访问，允许客户指明文件的类型与格式，并允许文件具有权限</p>
+<p>2、屏蔽了各计算机系统的细节，因而适合于异构网络中的任意计算机之间传送文件</p>
+<p>3、FTP采用客户&#x2F;服务器的工作方式，使用TCP传输服务</p>
+<h3 id="FTP的功能"><a href="#FTP的功能" class="headerlink" title="FTP的功能"></a>FTP的功能</h3><p>1、提供不同种类主机系统之间的文件传输能力</p>
+<p>2、以用户权限管理的方式提供用户对远程FTP服务器的文件管理能力</p>
+<p>3、以匿名FTP的方式提供公用文件共享的能力</p>
+<h3 id="FTP进程组成"><a href="#FTP进程组成" class="headerlink" title="FTP进程组成"></a>FTP进程组成</h3><p>1、主进程：负责接收新的请求</p>
+<p>2、 若干从属进程：处理单个请求</p>
+<h3 id="FTP工作原理"><a href="#FTP工作原理" class="headerlink" title="FTP工作原理"></a>FTP工作原理</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/FTP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png" alt="FTP工作原理"></p>
+<h2 id="6-4电子邮件系统"><a href="#6-4电子邮件系统" class="headerlink" title="6.4电子邮件系统"></a>6.4电子邮件系统</h2><h3 id="电子邮件系统的的组成结构"><a href="#电子邮件系统的的组成结构" class="headerlink" title="电子邮件系统的的组成结构"></a>电子邮件系统的的组成结构</h3><p>1、用户代理：用户与电子邮件系统的接口</p>
+<p>2、邮件服务器</p>
+<p>​    组成电子邮件的系统的核心</p>
+<p>​    发送和接收邮件</p>
+<p>​    向用户汇回报发送情况</p>
+<p>3、邮件发送协议和读取协议</p>
+<p>​    SMTP:邮件发送协议</p>
+<p>​    POP3：邮件读取协议</p>
+<h3 id="电子邮件的收发过程"><a href="#电子邮件的收发过程" class="headerlink" title="电子邮件的收发过程"></a>电子邮件的收发过程</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%9A%84%E6%94%B6%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="电子邮件的收发过程"></p>
+<h3 id="电子邮件与MIME"><a href="#电子邮件与MIME" class="headerlink" title="电子邮件与MIME"></a>电子邮件与MIME</h3><p>电子邮件格式</p>
+<p>​    1、to是必需的关键字，后面是填入一个或多个收件人的电子邮件地址</p>
+<p>​    2、Subject是可选关键字，是邮件的主题，反映了邮件的主要内容</p>
+<p>​    3、Fr+om是必填的关键字，但它通常是由邮件系统自动填入</p>
+<p>典型的邮件传送</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%85%B8%E5%9E%8B%E7%9A%84%E9%82%AE.png" alt="典型的邮"></p>
+<p>SMTP与MIME</p>
+<p>​    1、SMTP不能传送可执行文件和其他二进制对象</p>
+<p>​    2、SMTP仅限于传送7为ASCII码，不能传送其他国家的文字</p>
+<p>​    3、SMTP会拒绝超过一定长度的邮件</p>
+<h3 id="SMTP和POP3"><a href="#SMTP和POP3" class="headerlink" title="SMTP和POP3"></a>SMTP和POP3</h3><p>简单邮件传输协议（SMTP）</p>
+<p>概述</p>
+<p>​    1、一种提供可靠且有效的电子邮件传输的协议，它控制两个互相通信的SMTP进程交换信息</p>
+<p>​    2、使用客户&#x2F;服务器模型</p>
+<p>​    3、发送邮件SMTP进程是SMTP客户，而负责接收邮件的SMTP进程是SMTP服务器</p>
+<p>​    4、TCP连接 端口为25</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E9%80%9A%E4%BF%A1%E9%98%B6%E6%AE%B5.png" alt="通信阶段"></p>
+<p>POP3</p>
+<p>概述</p>
+<p>​    1、邮局协议（POP3）是一个非常简单但功能有限的邮件读取协议，现在使用的是它的第三个版本</p>
+<p>​    2、当用户读取邮件时，用户代理像邮件服务器发出请求，拉取用户邮箱中的邮件</p>
+<p>​    3、使用客户&#x2F;服务器的工作方式</p>
+<p>​    4、在传输层使用TCP，端口号为110</p>
+<p>工作方式</p>
+<p>​    下载并保留</p>
+<p>​    下载并删除</p>
+<h3 id="基于万维网的电子邮件"><a href="#基于万维网的电子邮件" class="headerlink" title="基于万维网的电子邮件"></a>基于万维网的电子邮件</h3><p>1、用户浏览器与Hotmail或Gmail的邮件服务器之间的邮件发送或接收使用HTTP</p>
+<p>2、在不同邮件服务器之间传送邮件时使用SMTP</p>
+<h2 id="6-5万维网（WWW）"><a href="#6-5万维网（WWW）" class="headerlink" title="6.5万维网（WWW）"></a>6.5万维网（WWW）</h2><h3 id="www的概念与组成结构"><a href="#www的概念与组成结构" class="headerlink" title="www的概念与组成结构"></a>www的概念与组成结构</h3><p>概念</p>
+<p>​    1、在这个空间中，有用的事物称为资源，并由一个全域的”统一资源定位符”（URL）标识</p>
+<p>​    2、这些资源通过超文本传输协议（HTTP）传送给使用者，而后者通过单机连接来获取资源</p>
+<p>内核部分标准构成</p>
+<p>​    统一资源定位符（URL）</p>
+<p>​    超文本传输协议（HTTP）</p>
+<p>​    超文本标记语言（HTML）</p>
+<p>工作流程</p>
+<p>​    1、web用户使用浏览器与web服务器建立连接，并发送浏览请求</p>
+<p>​    2、web服务器把URL转换为文件路径，并返回信息给web浏览器</p>
+<p>​    3、通信完成，关闭连接</p>
+<h3 id="超文本传输协议（HTTP）"><a href="#超文本传输协议（HTTP）" class="headerlink" title="超文本传输协议（HTTP）"></a>超文本传输协议（HTTP）</h3><p>概述</p>
+<p>​    1、HTTP定义了浏览器怎么向万维网服务器请求万维网文档，以及服务器怎样把文档传送给浏览器</p>
+<p>​    2、HTTP是面向十五的应用层协议</p>
+<p>​    3、规定了浏览器和服务器之间的请求和响应的格式与规则</p>
+<p>​    4、是万维网上能够可靠地交换文件的重要基础</p>
+<p>HTTP操作过程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/HTTP%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png" alt="HTTP操作过程"></p>
+<p>HTTP报文</p>
+<p>​    1、请求报文</p>
+<p>​    2、响应报文</p>
+<p>HTTP的特点</p>
+<p>​    1、HTTP是无状态，同一个客户第二次访问同一个服务器的页面时，服务器的响应与第一次被访问时相同</p>
+<p>​    2、HTTP的无状态特性简化了服务器的涉及，使服务器更容易支持大量并发的HTTP的请求</p>
+<p>​    3、使用Cookie加数据库的方式来跟踪用户的活动</p>
+<p>​    4、HTTP采用TCP作为传输层协议，保证了数据的可靠传输</p>
+<p>​    5、HTTP既可以使用非持久连接，也可以使用持久连接</p>
+<p>HTTP报文结构</p>
+<p>HTTP是面向文本的</p>
+<p>报文类型</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B.png" alt="报文类型"></p>
+<p>状态码</p>
+<p>1xx表示通知信息的，如请求收到了或正在处理</p>
+<p>2xx表示成功，如接收或知道了</p>
+<p>3xx表示重定向，如要完成请求还必须采取进一步的行动</p>
+<p>4xx表示客户的差错，如请求中有错误的语法或不能完成</p>
+<p>5xx表示服务的差错，如服务器失效无法完成请求</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%BA%94%E7%94%A8%E5%B1%82.png" alt="应用层"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/03/29/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82/" title="第六章:应用层">https://wjjhui.github.io/2022/03/29/第六章：应用层/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/26/%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E4%BC%A0%E8%BE%93%E5%B1%82/" rel="prev" title="第五章:传输层">
+      <i class="fa fa-chevron-left"></i> 第五章:传输层
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/" rel="next" title="第一章:操作系统的概述">
+      第一章:操作系统的概述 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">6.1网络应用模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7-x2F-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">客户&#x2F;服务器模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P2P%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">P2P模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E7%B3%BB%E7%BB%9F%EF%BC%88DNS%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">6.2域名服务系统（DNS）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%82%E6%AC%A1%E5%9F%9F%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">2.2.</span> <span class="nav-text">层次域名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">域名服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">域名解析过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%EF%BC%88FTP%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">6.3文件传输协议（FTP）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">3.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">3.2.</span> <span class="nav-text">FTP的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E8%BF%9B%E7%A8%8B%E7%BB%84%E6%88%90"><span class="nav-number">3.3.</span> <span class="nav-text">FTP进程组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">3.4.</span> <span class="nav-text">FTP工作原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text">6.4电子邮件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%9A%84%E7%BB%84%E6%88%90%E7%BB%93%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">电子邮件系统的的组成结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%9A%84%E6%94%B6%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">电子邮件的收发过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E4%B8%8EMIME"><span class="nav-number">4.3.</span> <span class="nav-text">电子邮件与MIME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMTP%E5%92%8CPOP3"><span class="nav-number">4.4.</span> <span class="nav-text">SMTP和POP3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E4%B8%87%E7%BB%B4%E7%BD%91%E7%9A%84%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6"><span class="nav-number">4.5.</span> <span class="nav-text">基于万维网的电子邮件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-5%E4%B8%87%E7%BB%B4%E7%BD%91%EF%BC%88WWW%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">6.5万维网（WWW）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#www%E7%9A%84%E6%A6%82%E5%BF%B5%E4%B8%8E%E7%BB%84%E6%88%90%E7%BB%93%E6%9E%84"><span class="nav-number">5.1.</span> <span class="nav-text">www的概念与组成结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE%EF%BC%88HTTP%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">超文本传输协议（HTTP）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

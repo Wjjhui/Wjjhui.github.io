@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第二章:进程管理">
+<meta property="og:url" content="https://wjjhui.github.io/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%A4%9A%E5%AF%B9%E4%B8%80%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%B8%80%E5%AF%B9%E4%B8%80%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%B8%83%E7%8A%B6%E6%80%81%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/FCFS%E3%80%81SJF%E3%80%81HRRN%E5%AF%B9%E6%AF%94.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E6%97%B6%E9%97%B4%E7%89%87%E3%80%81%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8D%95%E6%A0%87%E5%BF%97%E6%B3%95%E5%AE%9E%E7%8E%B0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8F%8C%E6%A0%87%E5%BF%97%E5%85%88%E6%A3%80%E6%9F%A5%E5%AE%9E%E7%8E%B0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8F%8C%E6%A0%87%E5%BF%97%E5%90%8E%E6%A3%80%E6%9F%A5%E5%AE%9E%E7%8E%B0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/Peterson%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/TestAndSet%E6%8C%87%E4%BB%A4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/Swap%E6%8C%87%E4%BB%A4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1%E3%80%81%E6%95%B4%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/2%E3%80%81%E8%AE%B0%E5%BD%95%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/3%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%BA%92%E6%96%A5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/4%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%90%8C%E6%AD%A5.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/5%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%89%8D%E9%A9%B1%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%AD%BB%E9%94%81%E7%9A%84%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%AF%B9%E6%AF%94%E5%9B%BE.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%AD%BB%E9%94%81%E3%80%81%E9%A5%A5%E9%A5%BF%E3%80%81%E6%AD%BB%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%8C%BA%E5%88%AB.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.png">
+<meta property="article:published_time" content="2022-04-15T12:50:18.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:42:15.463Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第二章:进程管理 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第二章:进程管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-15 20:50:18" itemprop="dateCreated datePublished" datetime="2022-04-15T20:50:18+08:00">2022-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:42:15" itemprop="dateModified" datetime="2022-05-15T18:42:15+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>7.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="2-1进程与线程"><a href="#2-1进程与线程" class="headerlink" title="2.1进程与线程"></a>2.1进程与线程</h2><h3 id="进程的概念和特征"><a href="#进程的概念和特征" class="headerlink" title="进程的概念和特征"></a>进程的概念和特征</h3><p>   进程的概念</p>
+<p>   为了更好地描述和控制程序的并发执行，实现操作系统的并发性和共享性</p>
+<p>   进程控制块（PCB）：为了更好的描述进程的基本情况和运行状态，进而控制和管理进程 [PCB是进程存在的唯一标志]</p>
+<p>   进程的一些典型定义</p>
+<p>   1、进程是程序一次执行过程</p>
+<p>   2、进程是一次程序及其数据在处理机上顺序执行时所发生的活动</p>
+<p>   3）进程是具有独立功能的程序在一个数据集合上运行的过程，是资源分配和调度的独立单位</p>
+<p>   进程的特征</p>
+<p>   1、动态性：动态性是进程是基本特征，引入进程有这创建、活动、暂停、终止等过程，具有生命周期（最基本的特征）</p>
+<p>   2、并发性：多个进程实体同时存在内存中，引入进程的目的就是为了程序与其他程序并发执行</p>
+<p>   3、独立性：进程实体是一个能独立运行、独立获得资源和独立接收调度的基本单元</p>
+<p>   4、异步性：每个进程都配置一个PCB对其进行描述</p>
+<p>   1）：进程描述信息</p>
+<p>   2）：进程控制和管理信息</p>
+<p>   3）：资源分配清单</p>
+<p>   4）：处理机相关信息</p>
+<h3 id="进程的状态与转换"><a href="#进程的状态与转换" class="headerlink" title="进程的状态与转换"></a>进程的状态与转换</h3><p>   状态</p>
+<p>   1、创建态：进程正在被创建，尚未进入就绪态</p>
+<p>   2、就绪态：进程已处于准备运行状态</p>
+<p>   3、运行态：进程在处理机上运行</p>
+<p>   4、阻塞态：又称等待态，进程正在等待某个时间而暂停运行</p>
+<p>   5、结束态：进程正在从系统中消失（包括正常结束和异常终止）</p>
+<p>   相互转换</p>
+<p>   1、就绪态–&gt;运行态：处于就绪态的进程获得处理机进行运行态</p>
+<p>   2、运行态–&gt;就绪态：处于运行态的进程时间片用完后，让出处理机进入就绪态</p>
+<p>   3、运行态–&gt;阻塞态：进程请求除处理机外的其他资源，此时运行态进入阻塞态（系统调用请求操作系统提供服务，这是一种特殊的，由运行用户态程序调用操作系统内核过程的形式）</p>
+<p>   4、阻塞态–&gt;就绪态：进程等待其他资源的获得，如IO资源、或中断结束</p>
+<p>   <img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE.png" alt="进程状态转换图"></p>
+<h3 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h3><p>   进程的创建</p>
+<p>   1、分配进程标识号，申请PCB（PCB是有限的）</p>
+<p>   2、为进程分配资源，为程序和数据以及用户栈分配必要的内存空间</p>
+<p>   3、初始化PCB，包括初始化标志信息，初始化处理机状态信息，初始化处理机控制信息，设置进程的优先级</p>
+<p>   4、若进程就绪队列可以接纳新进程，进程就进入就绪态</p>
+<p>   进程的终止</p>
+<p>   结束分类</p>
+<p>   1、正常结束：进程的任务已经完成并且准备推出运行</p>
+<p>   2、异常结束：进程正在进行，出现了某些异常，导致程序无法继续运行（存储区越界、保护错、非法指令、特权指令错、IO故障等）</p>
+<p>   3、外界干预：进程应外界请求终止运行</p>
+<p>   结束过程</p>
+<p>   1、根据被终止进程的标识符，检索PCB，读取进程状态</p>
+<p>   2、若进程处于运行态，终止运行，剥夺处理机</p>
+<p>   3、终止进程下的所有子进程</p>
+<p>   4、该进程拥有的全部资源还给父进程或者操作系统</p>
+<p>   5、将PCB从队列中删除</p>
+<p>   进程的阻塞和唤醒</p>
+<p>   阻塞原语执行过程</p>
+<p>   阻塞是一种自主行为，自我阻塞</p>
+<p>   1、找到要被阻塞进程标识号对应的PCB</p>
+<p>   2、若进程处于运行态，保护其现场，将其状态转换为阻塞态，停止运行</p>
+<p>   3、将PCB插入相应时间的等待队列</p>
+<p>   唤醒原语的执行过程</p>
+<p>   唤醒是被相互有联系的其他进程进行唤醒</p>
+<p>   1、找到等待队列中进程相应的PCB</p>
+<p>   2 、将其从等待队列中移出，置其状态为就绪态</p>
+<p>   3、将PCB插入就绪队列，等待调度程序调度</p>
+<p>   进程切换</p>
+<p>   进程切换是内核态下完成的</p>
+<p>   过程</p>
+<p>   1、保存处理机上下文，包括程序计数器和其他寄存器</p>
+<p>   2、更新PCB信息</p>
+<p>   3、把进程的PCB移入相应的队列，如就绪、在某时间阻塞等队列</p>
+<p>   3、选择另一个进程之执行，更新其PCB</p>
+<p>   4、更新内存管理的数据结构</p>
+<p>   5、恢复处理机上下文</p>
+<h3 id="进程的组织"><a href="#进程的组织" class="headerlink" title="进程的组织"></a>进程的组织</h3><p>   进程是一个独立的运行单位，也是操作系统进行资源分配和调度的基本单位，由一下三部分组成</p>
+<p>   1、进程控制块（PCB）</p>
+<p>   1）进程描述信息</p>
+<p>   进程标识符：标志进程 用户标识符：进程归属的用户，主要为共享和保护服务</p>
+<p>   2）进程控制和管理信息</p>
+<p>   进程当前状态：描述进程状态信息</p>
+<p>   进程优先级：描述进程抢占处理机的优先级</p>
+<p>   代码运行入口地址</p>
+<p>   程序的外存地址</p>
+<p>   进入内存时间</p>
+<p>   处理机占用时间</p>
+<p>   信号量使用</p>
+<p>   3）资源分配清单</p>
+<p>   用以说明有关内存地址空间或者虚拟地址空间状况，所打开的文件的列表和所使用的输入&#x2F;输出设备信息</p>
+<p>   代码段指针、数据段指针、堆栈段指针、文件描述符、键盘、鼠标</p>
+<p>   4）处理机相关信息</p>
+<p>   处理机中各寄存器的值</p>
+<p>   2、程序段：能被进程调度程序调度到CPU执行的程序代码段</p>
+<p>   3、数据段：进程对应的程序加工处理的原始数据或者程序执行时产生的中间或最终结果</p>
+<p>   进程的组织方式</p>
+<p>   1）链接方式</p>
+<p>   按照进程状态将PCB分为多个队列 操作系统持有指向各个队列的指针</p>
+<p>   2）索引方式</p>
+<p>   根据进程状态的不同建立几张索引表 操作系统持有指向各个索引表的指针</p>
+<h3 id="进程的通信"><a href="#进程的通信" class="headerlink" title="进程的通信"></a>进程的通信</h3><p>   1、共享存储</p>
+<p>   操作系统只负责为通信进程提供可共享使用的存储空间和同步互斥工具，数据交换则由用户自己安排读&#x2F;写指令完成</p>
+<p>   1）通信进程之间存在一块可以被直接访问的共享空间</p>
+<p>   2）低级方式：基于数据结构共享（只能存放长度为10的数组）</p>
+<p>   3）高级方式：基于存储区共享</p>
+<p>   2、消息传递</p>
+<p>   1）进程间的数据交换是以格式化的消息为单位的，进程通过系统提供的send和receive原语进行数据交换</p>
+<p>   2）直接通信方式：发送进程直接发送消息给接收进程，并把它挂在接收进程的消息缓冲队列上，接收进程从消息缓冲队列中取得消息</p>
+<p>   3）间接通信方式：发送进程把消息发送给某个中间实体，接收进程从中间实体中获得消息</p>
+<p>   3、管道通信</p>
+<p>   1）发送进程以字符流形式将大量数据写入管道，接收进程从管道中接收数据</p>
+<p>   当管道写满时，写进程堵塞，直到管道中的数据被读进程取走，即可唤醒写进程 当管道读空时，读进程堵塞，直到管道中的数据被写进程写入，即可唤醒读进程</p>
+<p>   2）功能：互斥、同步、确定对方存在</p>
+<p>   3）限制管道的大小</p>
+<p>   4）管道变空的适合阻塞读进程</p>
+<h3 id="线程的概念和多线程模型"><a href="#线程的概念和多线程模型" class="headerlink" title="线程的概念和多线程模型"></a>线程的概念和多线程模型</h3><p>   线程的基本概念</p>
+<p>   1、减小程序在并发执行时所付出的时空开销，提高操作系统的并发性能</p>
+<p>   2、引入线程后，进程只作为系统资源的分配单元，线程作为处理机的分配单元</p>
+<p>   线程与进程的比较</p>
+<p>   1、调度</p>
+<p>   传统中进程是资源和独立调度的基本单位 引入线程后，进程是独立调度的基本单位，线程是资源的基本单位</p>
+<p>   2、拥有资源：进程是资源分配的基本单位</p>
+<p>   3、并发性：引入线程后，进程可以并发执行，多个线程之间也可以并发执行，提高系统的吞吐量</p>
+<p>   4、系统开销：统一进程的线程切换要比进程切换的开销小的多</p>
+<p>   5、地址空间和其他资源：进程的地址空间之间相互独立，统一进程的各线程之间共享进程的资源，某进程的线程对其他进程不可见</p>
+<p>   6、通信方面：进程间通信需要进程同步和互斥手段的辅助，保证数据的一致性 线程间可以直接读&#x2F;写进程程序段来进行通信</p>
+<p>   线程属性</p>
+<p>   1、不拥有系统资源，拥有唯一标识符和线程控制块</p>
+<p>   2、不同的线程可以执行相同的程序，同一个服务程序被不同用户调用时，操作系统将其创建为不同线程</p>
+<p>   3、同一进程的线程共享该进程拥有的全部资源</p>
+<p>   4、线程是处理机的独立调度单位</p>
+<p>   5、线程也有生命周期，阻塞，就绪，运行等状态</p>
+<p>   6、多CPU计算机中，各个线程可占用不同的CPU</p>
+<p>   7、每个线程都有一个线程ID、线程控制块（TCB）</p>
+<p>   8、切换同进程内的线程，系统开销很小</p>
+<p>   9、切换进程，系统开销很大</p>
+<p>   10、由于共享内存地址空间，统一进程中的线程通信甚至无需系统干预</p>
+<h3 id="线程的实现方式"><a href="#线程的实现方式" class="headerlink" title="线程的实现方式"></a>线程的实现方式</h3><p>   用户级线程：有关线程管理的所有工作都由应用程序完成，内核意识不到</p>
+<p>   内核级线程：线程的管理工作全部由内核完成</p>
+<h3 id="多线程模型"><a href="#多线程模型" class="headerlink" title="多线程模型"></a>多线程模型</h3><p>   1、多对一</p>
+<p>   1）经多个用户级线程映射到一个内核级线程，线程管理在用户空间完成，用户级线程对操作系统不可见</p>
+<p>   2）优点：线程管理是用户控件进行的，效率较高</p>
+<p>   3）缺点：一个线程阻塞全部线程都会阻塞，多个线程不能并行运行在多处理机上</p>
+<p>   <img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%A4%9A%E5%AF%B9%E4%B8%80%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png" alt="多对一线程模型"></p>
+<p>   一对一</p>
+<p>   1）每个用户级线程映射一个内核级线程上</p>
+<p>   2）优点：并发能力强</p>
+<p>   3）缺点：创建线程开销大，影响应用程序的性能</p>
+<p>   <img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%B8%80%E5%AF%B9%E4%B8%80%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png" alt="一对一线程模型"></p>
+<p>   多对多</p>
+<p>n个线程映射到m个内核线程上（n&gt;m）</p>
+<p>   既可以提高并发性，由适当的降低了开销</p>
+<p>   <img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%A4%9A%E5%AF%B9%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png" alt="多对多线程模型"></p>
+<h2 id="2-2处理机调度"><a href="#2-2处理机调度" class="headerlink" title="2.2处理机调度"></a>2.2处理机调度</h2><h3 id="调度的概念"><a href="#调度的概念" class="headerlink" title="调度的概念"></a>调度的概念</h3><p>   调度的基本概念：合理的对进程进行处理机分配</p>
+<p>   调度的层次</p>
+<p>   1、作业调度（高级调度）：从外存中选择作业送入内存，每个作业只调入一次，调出一次</p>
+<p>   2、内存调度（中级调度）：提高内存利用率和系统吞吐量，将暂时不能运行的进程调至外存，使其进入挂起态。或者将已经具有运行条件的进程调入内存，修改状态为就绪态</p>
+<p>   3、进程调度（低级调度）：按照某种策略或者方法从就绪队列中选取一个进程，将处理机分配给它（最基本的调度，频率很高）</p>
+<p>   三级调度的关系</p>
+<p>   1、作业调度为进程活动做准备，进程调度使进程正常活动起来，内存调度将暂时不能运行的进程挂起，中级调度处于作业调度和进程调度之间</p>
+<p>   2、作业调度次数少，内存调度次数略多，进程调度频率最多</p>
+<p>   3、进程调度是最基本的，不可或缺的</p>
+<h3 id="调度的时机、切换与过程"><a href="#调度的时机、切换与过程" class="headerlink" title="调度的时机、切换与过程"></a>调度的时机、切换与过程</h3><p>   不可切换的情况</p>
+<p>   1、处理中断过程</p>
+<p>   2、进程在操作系统内核程序临界区的时候</p>
+<p>   3、其他需要完全屏蔽中断的原子操作过程</p>
+<p>   可以切换的情况</p>
+<p>   1、发生引起调度条件且当前进程无法继续进行</p>
+<p>   2、中断处理结束或者自陷处理结束</p>
+<h3 id="进程调度方式"><a href="#进程调度方式" class="headerlink" title="进程调度方式"></a>进程调度方式</h3><p>   非剥夺调度方式</p>
+<p>   1、如果想将处理机分配给一个优更高先级的进程，必须要等待当前占用处理机的进程释放处理机后才能将处理机分配给更高优先级进程</p>
+<p>   2、实现简单，开销小，适合大多数批处理系统</p>
+<p>   3、不适用于分时系统和大多数实时系统</p>
+<p>   剥夺调度方式</p>
+<p>   1、如果有更高级进程请求处理，暂停正在执行的进程，将处理机分配给更高级进程</p>
+<p>   2、提高系统吞吐率和响应效率</p>
+<h3 id="调度的基本准则"><a href="#调度的基本准则" class="headerlink" title="调度的基本准则"></a>调度的基本准则</h3><p>CPU利用率：尽可能保持CPU处于忙碌状态</p>
+<p>   系统吞吐量：单位时间内CPU完成作业的数量，调度算法和方式会对吞吐量造成较大影响</p>
+<p>   周转时间：作业提交到作业完成的时间</p>
+<p>   1、周转时间&#x3D;作业完成时间-作业到达时间</p>
+<p>   2、平均周转时间&#x3D;总周转时间&#x2F;N个作业</p>
+<p>   3、带权周转时间&#x3D;作业周转时间&#x2F;作业作业实际运行时间</p>
+<p>   4、平均带权周转时间&#x3D;总带权周转时间&#x2F;N个作业</p>
+<p>   等待时间：作业等待处理机的时间，衡量一个算法的优劣，只需要简单的考察等待时间</p>
+<p>   响应时间：从用户提交请求到系统首次产生响应所用的时间</p>
+<h3 id="进程的挂起态与七状态模型"><a href="#进程的挂起态与七状态模型" class="headerlink" title="进程的挂起态与七状态模型"></a>进程的挂起态与七状态模型</h3><p>   暂时调到外存等待的进程状态为挂起状态（挂起态）</p>
+<p>   1、就绪挂起</p>
+<p>   2、阻塞挂起</p>
+<p>   “挂起”和”阻塞”的区别：两种状态都是暂时不能获得CPU的服务，但是挂起态是将进程映像调到外存去了，而阻塞态下进程映像还是在内存中</p>
+<p>   七状态模型</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%B8%83%E7%8A%B6%E6%80%81%E6%A8%A1%E5%9E%8B.png" alt="七状态模型"></p>
+<h3 id="典型调度算法"><a href="#典型调度算法" class="headerlink" title="典型调度算法"></a>典型调度算法</h3><p>   1、先来先服务（FCFS）</p>
+<p>   1）作业调度 进程调度</p>
+<p>   2）先来的先分配处理机</p>
+<p>   3）优点：算法简单对长作业有利 有利于CPU繁忙型作业（计算型）</p>
+<p>   4）缺点：效率低 不利于短作业 不利于IO繁忙型作业</p>
+<p>   5）不会导致饥饿</p>
+<p>   6）非抢占式的算法</p>
+<p>   2、短作业优先（SJF）</p>
+<p>   1）进程调度</p>
+<p>   2）优先选择预计运行时间最短的进程</p>
+<p>   3）优点：平均等待时间 平均周转时间短</p>
+<p>   4）缺点：长作业不利，造成饥饿现象，没有考虑作业的紧迫性，用户可能可以缩短作业预估时间，使得无法做到短作业优先</p>
+<p>   5）产生”饥饿”现象。如果一直得不到服务，则称为”饿死”</p>
+<p>   6）SJF和SPF（短进程优先算法）是非抢占式的算法，但也有抢占式的版本–最短剩余时间优先算法（SRTN）</p>
+<p>   3、高响应比调度算法（HRRN）</p>
+<p>   1）响应比&#x3D;（等待时间+要求服务时间）&#x2F;要求服务时间&#x3D;1+等待时间&#x2F;要求服务时间</p>
+<p>   2）等待时间相同情况下，要求服务时间越短响应比越大，有利于短作业进程</p>
+<p>   3）要求服务时间相同，作业响应比由其等待时间决定，等待时间越长响应比越高，实现先来先服务</p>
+<p>   4）对于长作业，作业的响应比可以随等待时间的增加而提高，等待时间足够长，其响应比可以升到很高，从而获得处理</p>
+<p>   5）不会导致饥饿</p>
+<p>   6）非抢占式的算法</p>
+<p>FCFS、SJF、HRRN对比</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/FCFS%E3%80%81SJF%E3%80%81HRRN%E5%AF%B9%E6%AF%94.png" alt="FCFS、SJF、HRRN对比"></p>
+<p>   这几种算法主要关心对用户的公平性、平均周转时间、平均等待时间等评价系统整体性能的指标，但是不关心”响应时间”，也并不区分任务的紧急程度，因此对于用户来说，交互性很糟糕。因此这三种算法一般适合用于早期的批处理系统</p>
+<p>   4、优先级调度算法</p>
+<p>   1）作业调度，进程调度</p>
+<p>   2）分类</p>
+<p>   剥夺型：立即停止当前运行进程，将处理机分配给更高优先级进程</p>
+<p>   非剥夺型：等待当前进程运行完成，然后将处理机分配给更高优先级进程</p>
+<p>   3）优先级分类</p>
+<p>   静态优先级：进程创建后无法对优先级进行修改</p>
+<p>   动态优先级：可以根据进程运行状态，对进程优先级进行动态调整</p>
+<p>   4）优先级设置原则</p>
+<p>   系统进程&gt;用户进程</p>
+<p>   交互型进程&gt;非交互型进程</p>
+<p>​    I&#x2F;O进程&gt;计算型进程（CPU繁忙型）</p>
+<p>   5）产生”饥饿”现象</p>
+<p>   6）有抢占式的，也有非抢占式的</p>
+<p>   5、时间片轮转算法</p>
+<p>   1）使用分时系统，使用时间片，就绪进程按照到达先后排成队列，依次在时间片内占用处理机，时间片到达就释放处理机</p>
+<p>   2）时间片的选择很重要，过大就变成先来先服务，过小就表成了短作业优先</p>
+<p>   3）时间片影响因素：系统响应时间，就绪队列中的进程数目和系统的处理能力</p>
+<p>   4）不会导致饥饿</p>
+<p>   5）抢占式的算法</p>
+<p>   6、多级反馈队列调度算法</p>
+<p>   实现思想</p>
+<p>   1）设置多个就绪队列，为每个队列设置不同的优先级，优先级依次递减</p>
+<p>   2）每个队列的时间各不相同，时间片依次递增</p>
+<p>   3）每个队列按照先来先服务原则进行进程排队，若规定时间片内没有完成，就将进程放入下一级队列</p>
+<p>   4）只有高级队列为空的时候，低等级队列才能开始调度</p>
+<p>   优点</p>
+<p>   1）终端行作业用户：短作业优先</p>
+<p>   2）短批处理作业用户：周转时间较短</p>
+<p>   3）长批处理作业用户：讲过前面几个队列得到部分执行，不会长期得不到处理</p>
+<p>   产生”饥饿”现象</p>
+<p>   抢占式算法</p>
+<p>   优先级、时间片、多级反馈算法对比</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E6%97%B6%E9%97%B4%E7%89%87%E3%80%81%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94.png" alt="优先级、时间片、多级反馈算法对比"></p>
+<p>   比起早期的批处理操作系统来说，由于计算机造价大幅降低，因此之后出现的交互式操作系统（包括分时操作系统、实时操作系统等）更注重系统的响应时间、公性、平衡性等指标。而这几种算法恰好也能较好地满足交互式系统的需求。因此这三种算法适合用于交互式系统。（比如UNIX使用的就是多级反馈队列调度算法）</p>
+<h2 id="2-3进程同步"><a href="#2-3进程同步" class="headerlink" title="2.3进程同步"></a>2.3进程同步</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>   临界资源</p>
+<p>   一次只允许一个进程使用的资源（打印机、特殊变量、数据）</p>
+<p>   临界资源的访问过程</p>
+<p>   1、进入区：检查进程是否可以进入临界区</p>
+<p>   2、临界区：可以访问临界资源的代码</p>
+<p>   3、退出区：将正在访问临界区的标志清除</p>
+<p>   4、剩余区：代码中的其余部分</p>
+<p>   同步：直接制约关系，为了完成某种任务而建立的多个进程，相互合作，所以要相互通信同步 遵循的原则</p>
+<p>   1、空闲让进：临界区空闲时，可以允许一个请求进入临界区的进程立即进入临界区</p>
+<p>   2、忙则等待：已有进程进入临界区后，其他试图进入临界区的进程必须等待</p>
+<p>   3、有权等待：对于请求访问临界区的进程，在有限时间内进入临界区</p>
+<p>   4、让权等待：进程不能进入临界区的时候，应当立即释放处理机</p>
+<p>   互斥：间接制约关系，当一个进程访问临界资源的时候，其他进程不能访问</p>
+<h3 id="实现临界区互斥的基本方法"><a href="#实现临界区互斥的基本方法" class="headerlink" title="实现临界区互斥的基本方法"></a>实现临界区互斥的基本方法</h3><p>   软件实现方法</p>
+<p>   1、单标志法</p>
+<p>   两个程序交替进入临界区</p>
+<p>   优点：实现简单</p>
+<p>   缺点：可能会违背空闲等待，造成资源无法充分利用</p>
+<p>   单标志法实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8D%95%E6%A0%87%E5%BF%97%E6%B3%95%E5%AE%9E%E7%8E%B0.png" alt="单标志法实现"></p>
+<p>   2、双标志先检查法</p>
+<p>   每个进程访问临界资源前，先检查临界资源是否被访问，如果空闲才能进入</p>
+<p>   优点：不用交替进入，可以连续使用</p>
+<p>   缺点：两个进程可能同时进入临界区，违背忙则等待</p>
+<p>   双标志先检查实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8F%8C%E6%A0%87%E5%BF%97%E5%85%88%E6%A3%80%E6%9F%A5%E5%AE%9E%E7%8E%B0.png" alt="双标志先检查实现"></p>
+<p>   3、双标志后检查法</p>
+<p>   先设置自己标志，表明自己想进入，检查对方标志，如果对方也要进入就等待，否则就进入</p>
+<p>   优点：不会导致两个进程都进入临界区</p>
+<p>   缺点：双方可能会互相谦让，导致饥饿</p>
+<p>   双标志后检查实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E5%8F%8C%E6%A0%87%E5%BF%97%E5%90%8E%E6%A3%80%E6%9F%A5%E5%AE%9E%E7%8E%B0.png" alt="双标志后检查实现"></p>
+<p>   4、Peterson算法</p>
+<p>   防止两个进程无限期等待，在算法三的基础上增加一个标志位，从而防止饥饿</p>
+<p>   优点：解决了饥饿现象</p>
+<p>   缺点：算法复杂</p>
+<p>Peterson算法实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/Peterson%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0.png" alt="Peterson算法实现"></p>
+<p>   硬件实现方法</p>
+<p>   中断屏蔽法</p>
+<p>   1、对中断进行屏蔽、关中断</p>
+<p>   2、优点：简单、高效</p>
+<p>   3、缺点：不适用于多处理机；只适用于操作系统内核进程，不适用于用户进程（因为开&#x2F;关中断指令。只能运行在内核态，这组指令如果能让用户随意使用会很危险）</p>
+<p>TestAndSet指令</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/TestAndSet%E6%8C%87%E4%BB%A4.png" alt="TestAndSet指令"></p>
+<p>Swap指令</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/Swap%E6%8C%87%E4%BB%A4.png" alt="Swap指令"></p>
+<p>   优点：适用于任意数目的进程 简单且容易验证正确性 支持进程内有多个临界区</p>
+<p>   缺点：不能实现让全等待 可能会导致饥饿现象</p>
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>   1、整型信号量</p>
+<p>   不满足让权等待</p>
+<p>   用一个整数变量作为信号量，数值表示资源数</p>
+<p>   整型信号量实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/1%E3%80%81%E6%95%B4%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F.png" alt="1、整型信号量"></p>
+<p>   2、记录型信号量</p>
+<p>wait(S)、signal(S) 也可以记为 P(S)、V(S)，P( S ) —— 申请一个资源S，如果资源不够就阻塞等待。V( S ) —— 释放一个资源S，如果有进程在等待该资源，则唤醒一个进程</p>
+<p>S.value 的初值表示系统中某种资源的数目。</p>
+<p>S.L代表阻塞队列，进程阻塞的个数</p>
+<p>   记录型信号量实现</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/2%E3%80%81%E8%AE%B0%E5%BD%95%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F.png" alt="2、记录型信号量"></p>
+<p>   3、利用信号量实现互斥</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/3%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%BA%92%E6%96%A5.png" alt="3、利用信号量实现互斥"></p>
+<p>   4、利用信号量实现同步</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/4%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%90%8C%E6%AD%A5.png" alt="4、利用信号量实现同步"></p>
+<p>   5、利用信号量实现前驱关系</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/5%E3%80%81%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%89%8D%E9%A9%B1%E5%85%B3%E7%B3%BB.png" alt="5、利用信号量实现前驱关系"></p>
+<h3 id="管程"><a href="#管程" class="headerlink" title="管程"></a>管程</h3><p>   信号量机制存在的问题：编写程序困难、易出错</p>
+<p>   定义：一组数据以及定义在这组数据之上的对这组数据的操作组成的软件模块，这组操作能初始化并改变管程中的数据和同步进程</p>
+<p>   组成</p>
+<p>   1、局部于管程的共享结构数据说明</p>
+<p>   2、对该数据结构进行操作的一组过程</p>
+<p>   3、对局部于管程的共享数据设置初始值的语句</p>
+<p>   基本特性</p>
+<p>   1、局部于管程数据只能被局部于管程内的过程访问</p>
+<p>   2、一个进程只有通过调用管程内的过程才能进入管程访问共享数据</p>
+<p>   3、每次允许一个进程在管程内执行某个内部过程</p>
+<h2 id="2-4死锁"><a href="#2-4死锁" class="headerlink" title="2.4死锁"></a>2.4死锁</h2><h3 id="死锁的概念"><a href="#死锁的概念" class="headerlink" title="死锁的概念"></a>死锁的概念</h3><p>   死锁的定义：多个进程因为竞争资源造成的一种僵局，没有外力作用，这些进程都无法向前继续推进</p>
+<p>   死锁产生的原因</p>
+<p>   1、系统资源的竞争</p>
+<p>   2、 进程推进顺序非法</p>
+<p>   3、死锁产生的必要条件</p>
+<p>   1）互斥条件：进程对分配的资源进行排他性控制</p>
+<p>   2）不可剥夺条件：进程获得资源在未使用完之前，不能被其他进程强行夺走</p>
+<p>   3）请求并保持条件：进程已经保持了至少一个资源，提出新的资源请求，而该资源已经被其他进程占有，此时该进程被阻塞，但是自己已经获得的资源保持不放</p>
+<p>   4）循环等待条件：你等我释放，我等你释放</p>
+<p>   对不可剥夺资源的不合理分配，可能导致死锁。</p>
+<h3 id="死锁的处理策略"><a href="#死锁的处理策略" class="headerlink" title="死锁的处理策略"></a>死锁的处理策略</h3><p>   1、死锁预防：破坏四个必要条件中一个或多个，防止死锁</p>
+<p>   2、避免死锁：在资源的动态分配中，用某种方法防止系统进入不安全状态，避免死锁</p>
+<p>   3死锁的检测及解除：允许进程死锁，通过检测及时的判断死锁，然后对其进行解除</p>
+<p>   死锁的处理策略对比图</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%AD%BB%E9%94%81%E7%9A%84%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%AF%B9%E6%AF%94%E5%9B%BE.png" alt="死锁的处理策略对比图"></p>
+<h3 id="死锁预防"><a href="#死锁预防" class="headerlink" title="死锁预防"></a>死锁预防</h3><p>   1、破坏互斥条件：某些资源只能被互斥访问，并且某些情况下必须保护互斥性</p>
+<p>   2、破坏不剥夺条件</p>
+<p>   释放已经占有的资源</p>
+<p>   特点：增加系统开销，实现复杂，降低吞吐量</p>
+<p>   用于状态易于保存和恢复的数据（CPU的寄存器和内存资源）</p>
+<p>   3、破坏请求并保持条件：</p>
+<p>   一次申请完所需要的全部资源</p>
+<p>   特点：实现简单，但是资源严重浪费，可能导致饥饿</p>
+<p>   4、破坏循环等待条件</p>
+<p>   采用顺序资源法，对进程进行顺序推荐</p>
+<p>   特点：进程编号必须稳定，可能会导致资源浪费，并且不利于用户编程</p>
+<h3 id="死锁避免"><a href="#死锁避免" class="headerlink" title="死锁避免"></a>死锁避免</h3><p>   系统安全状态：按照某种方式分配资源后，如果会导致死锁就是不安全状态，反之就是安全状态</p>
+<p>   银行家算法：通过计算当前资源的不同分配方式，从而预测系统是否会进入不安全状态</p>
+<p>   系统处于不安全状态未必死锁，但死锁时一定处于不安全状态。系统处于安全状态一定不会死锁。</p>
+<h3 id="死锁的检测和解除"><a href="#死锁的检测和解除" class="headerlink" title="死锁的检测和解除"></a>死锁的检测和解除</h3><p>   资源分配图：圈圈表示进程，框表示一类资源，进程到资源称为请求边，资源到进程称为分配边</p>
+<p>   死锁定理</p>
+<p>   1、在资源分配图中找到分配满足的进程，然后消去其请求边与分配边</p>
+<p>   2、如果最后所有边都能被消去，则不存在死锁，反之存在死锁</p>
+<p>   死锁解除</p>
+<p>   1、资源剥夺法：挂起某些死锁进程，抢占资源，将这些资源分配给其他死锁进程，但是要防止挂起时间过长</p>
+<p>   2、撤销进程法：强制撤销部分甚至全部死锁进程，并且剥夺他们的资源，撤销原则可以根据优先级和撤销进程代价进行</p>
+<p>   3、进程回退法：让一个或多个进程回退到足以回避死锁的地步，进程回退时自愿释放资源而非被剥夺，要求系统保持进程历史信息，设置还原点</p>
+<h3 id="死锁、饥饿、死循环的区别"><a href="#死锁、饥饿、死循环的区别" class="headerlink" title="死锁、饥饿、死循环的区别"></a>死锁、饥饿、死循环的区别</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%AD%BB%E9%94%81%E3%80%81%E9%A5%A5%E9%A5%BF%E3%80%81%E6%AD%BB%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%8C%BA%E5%88%AB.png" alt="死锁、饥饿、死循环的区别"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.png" alt="进程管理"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="第二章:进程管理">https://wjjhui.github.io/2022/04/15/第二章：进程管理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/" rel="prev" title="第一章:操作系统的概述">
+      <i class="fa fa-chevron-left"></i> 第一章:操作系统的概述
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/18/%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="next" title="第三章:内存管理">
+      第三章:内存管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">2.1进程与线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E7%89%B9%E5%BE%81"><span class="nav-number">1.1.</span> <span class="nav-text">进程的概念和特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81%E4%B8%8E%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">进程的状态与转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">进程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%84%E7%BB%87"><span class="nav-number">1.4.</span> <span class="nav-text">进程的组织</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="nav-number">1.5.</span> <span class="nav-text">进程的通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.6.</span> <span class="nav-text">线程的概念和多线程模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">线程的实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.8.</span> <span class="nav-text">多线程模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2%E5%A4%84%E7%90%86%E6%9C%BA%E8%B0%83%E5%BA%A6"><span class="nav-number">2.</span> <span class="nav-text">2.2处理机调度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">调度的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E7%9A%84%E6%97%B6%E6%9C%BA%E3%80%81%E5%88%87%E6%8D%A2%E4%B8%8E%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">调度的时机、切换与过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%96%B9%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">进程调度方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%87%86%E5%88%99"><span class="nav-number">2.4.</span> <span class="nav-text">调度的基本准则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%8C%82%E8%B5%B7%E6%80%81%E4%B8%8E%E4%B8%83%E7%8A%B6%E6%80%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.5.</span> <span class="nav-text">进程的挂起态与七状态模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">2.6.</span> <span class="nav-text">典型调度算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">3.</span> <span class="nav-text">2.3进程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%B4%E7%95%8C%E5%8C%BA%E4%BA%92%E6%96%A5%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">实现临界区互斥的基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">3.3.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%A1%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">管程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4%E6%AD%BB%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">2.4死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">死锁的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E7%9A%84%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5"><span class="nav-number">4.2.</span> <span class="nav-text">死锁的处理策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E9%A2%84%E9%98%B2"><span class="nav-number">4.3.</span> <span class="nav-text">死锁预防</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E9%81%BF%E5%85%8D"><span class="nav-number">4.4.</span> <span class="nav-text">死锁避免</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E7%9A%84%E6%A3%80%E6%B5%8B%E5%92%8C%E8%A7%A3%E9%99%A4"><span class="nav-number">4.5.</span> <span class="nav-text">死锁的检测和解除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E3%80%81%E9%A5%A5%E9%A5%BF%E3%80%81%E6%AD%BB%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.6.</span> <span class="nav-text">死锁、饥饿、死循环的区别</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="深度学习环境配置">
+<meta property="og:url" content="https://wjjhui.github.io/2023/06/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185048826.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185431539.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185614677.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608190652453.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608190405974.png">
+<meta property="article:published_time" content="2023-06-08T10:50:18.000Z">
+<meta property="article:modified_time" content="2023-06-08T11:18:10.144Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185048826.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2023/06/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深度学习环境配置 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2023/06/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深度学习环境配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-06-08 18:50:18 / 修改时间：19:18:10" itemprop="dateCreated datePublished" datetime="2023-06-08T18:50:18+08:00">2023-06-08</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="学习环境配置"><a href="#学习环境配置" class="headerlink" title="学习环境配置"></a>学习环境配置</h2><p>入门深度学习，首先要做的事情就是要搭建深度学习的环境。不管你是Windows用户，Mac用户还是Ubuntu用户，只要电脑配置允许，都可以做深度学习，毕竟Windows、Mac和Ubuntu系统都可以进行深度学习环境的搭建。接下来就记录下自己在Windows系统上搭建深度学习环境的过程，方便自己存档也为大家提供一个参考。<br>本次环境配置主要模式是基于Minianaconda+CUDA+cuDNN+PyTorch(GPU版)进行搭建的。</p>
+<h4 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h4><p>Python集成开发环境：Minianaconda<br>CUDA、cuDNN：英伟达提供的针对英伟达显卡的运算平台。用来提升神经网络的运行效率，如果电脑显卡不满足要求也是可以不用安装，使用cpu来进行运算。<br>开发工具：PyCharm<br>深度学习库：PyTorch（也可以使用Google开源的TensorFlow平台，不过一般学术界多用PyTorch平台。）</p>
+<h4 id="一、安装Minianaconda"><a href="#一、安装Minianaconda" class="headerlink" title="一、安装Minianaconda"></a>一、安装Minianaconda</h4><p><a target="_blank" rel="noopener" href="https://docs.conda.io/en/latest/miniconda.html#">minianaconda官网下载</a></p>
+<p><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/">清华大学开源镜像下载</a></p>
+<p>两个网站都可以下载，选择适合自己电脑的版本下载即可。</p>
+<p>安装之后会自动配置环境变量，检查是否安装成功即可。</p>
+<p>1.查看conda版本</p>
+<p><code>conda --version</code></p>
+<p>2.创建新的虚拟环境</p>
+<p><code>conda create --name dl2</code></p>
+<p>3.激活conda虚拟环境</p>
+<p><code>activate dl2</code></p>
+<p>4.关闭虚拟环境</p>
+<p><code>deactivate</code></p>
+<p>5.查看已创建环境</p>
+<p><code>conda info -e</code><br><code>或</code><br><code>conda env list</code></p>
+<p>6.删除环境</p>
+<p><code>conda remove --name &lt;env_name&gt; --all</code></p>
+<p>7.复制环境</p>
+<p><code>conda create --name &lt;new_env_name&gt; --clone &lt;old_evn_name&gt;</code></p>
+<p>8.查看当前环境已安装的包</p>
+<p><code>conda list</code></p>
+<p>9.卸载当前环境的包</p>
+<p><code>conda remove &lt;package_name&gt;</code></p>
+<h4 id="二、安装CUDA"><a href="#二、安装CUDA" class="headerlink" title="二、安装CUDA"></a>二、安装CUDA</h4><p>首先安装NVDIA显卡驱动，<a target="_blank" rel="noopener" href="https://www.nvidia.cn/geforce/drivers/">NVIDIA官网</a></p>
+<p>安装完NVIDIA以后我们还需要安装CUDA以及cuDNN，这两个是NVIDIA官方给出的便于深度学习计算的补丁</p>
+<p>CUDA的安装之前我们先要看看相适配的版本，桌面空白处右键，打开NVIDIA控制面板，依次点击帮助-系统信息，在弹出的界面中选择组件:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185048826.png" alt="image-20230608185048826"></p>
+<p>在第三行我们可以看出我这台电脑要安装cuda11.6的版本，我们去下载cuda不可以高于这个版本，最好也别过低。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads">CUDA官网</a></p>
+<p><strong>下载完之后存放CUDA的文件夹会自动消失，后面可以从C盘找到相对应的路径。</strong></p>
+<h4 id="三、安装cuDNN"><a href="#三、安装cuDNN" class="headerlink" title="三、安装cuDNN"></a>三、安装cuDNN</h4><p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/[rdp](https://so.csdn.net/so/search?q=rdp&spm=1001.2101.3001.7020)/cudnn-download">cuDNN官网</a></p>
+<p>下载的时候注意版号，一定要让cudnn和cuda的版号完全一样才可以。<br>下载好之后打开cudnn的压缩包，再打开cuda的目录（目录在图里）：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185431539.png" alt="image-20230608185431539"></p>
+<p>可以看到cudnn有三个文件夹，把这些文件夹中的东西放入C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6下</p>
+<p>至此cuda+cudnn就安装完成了，我们打开anaconda prompt，输入<code>nvcc -V</code>来看看cuda信息：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608185614677.png" alt="image-20230608185614677"></p>
+<h4 id="四：安装PyTorch-GPU版"><a href="#四：安装PyTorch-GPU版" class="headerlink" title="四：安装PyTorch(GPU版)"></a>四：安装PyTorch(GPU版)</h4><p>1.激活conda虚拟环境</p>
+<p><code>activate dl2</code></p>
+<p><del>安装pytorch：conda install pytorch</del></p>
+<p>此命令会安装基于CPU版本的pytorch</p>
+<p>正确安装方法</p>
+<p>进入<a target="_blank" rel="noopener" href="https://pytorch.org/get-started/locally/">PyTorch官网</a>,选择相关的电脑配置，然后进入虚拟环境运行，加上镜像源</p>
+<p>镜像源：<br>-i <a target="_blank" rel="noopener" href="https://opsx.alibaba.com/mirror">https://opsx.alibaba.com/mirror</a><br>-i <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608190652453.png" alt="image-20230608190652453"></p>
+<p>检查是否安装成功</p>
+<p><code>python</code></p>
+<p><code>import torch</code></p>
+<p><code>torch.__version__ //注意version前后是两个下划线</code></p>
+<p><code>torch.cuda.is_available()</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/image-20230608190405974.png" alt="image-20230608190405974"></p>
+<h3 id="此时，深度学习环境配置完成。"><a href="#此时，深度学习环境配置完成。" class="headerlink" title="此时，深度学习环境配置完成。"></a>此时，深度学习环境配置完成。</h3>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2023/06/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="深度学习环境配置">https://wjjhui.github.io/2023/06/08/深度学习环境配置/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DeepLearning/" rel="tag"># DeepLearning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/06/05/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="prev" title="机器学习吴恩达">
+      <i class="fa fa-chevron-left"></i> 机器学习吴恩达
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">学习环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-number">1.0.1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AE%89%E8%A3%85Minianaconda"><span class="nav-number">1.0.2.</span> <span class="nav-text">一、安装Minianaconda</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85CUDA"><span class="nav-number">1.0.3.</span> <span class="nav-text">二、安装CUDA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85cuDNN"><span class="nav-number">1.0.4.</span> <span class="nav-text">三、安装cuDNN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%EF%BC%9A%E5%AE%89%E8%A3%85PyTorch-GPU%E7%89%88"><span class="nav-number">1.0.5.</span> <span class="nav-text">四：安装PyTorch(GPU版)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A4%E6%97%B6%EF%BC%8C%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E5%AE%8C%E6%88%90%E3%80%82"><span class="nav-number">1.1.</span> <span class="nav-text">此时，深度学习环境配置完成。</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

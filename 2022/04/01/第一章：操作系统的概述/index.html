@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="第一章:操作系统的概述">
+<meta property="og:url" content="https://wjjhui.github.io/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="秃哦鸡">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo@master/img/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E6%A0%B8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo@master/img/%E5%A4%A7%E5%86%85%E6%A0%B8%E4%B8%8E%E5%BE%AE%E5%86%85%E6%A0%B8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0.png">
+<meta property="article:published_time" content="2022-04-01T12:50:18.000Z">
+<meta property="article:modified_time" content="2022-05-15T10:44:14.981Z">
+<meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo@master/img/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E6%A0%B8.png">
+
+<link rel="canonical" href="https://wjjhui.github.io/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "none",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第一章:操作系统的概述 | 秃哦鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+
+<link rel="alternate" href="/atom.xml" title="秃哦鸡" type="application/atom+xml">
+</head>
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+<body itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">秃哦鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第一章:操作系统的概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-01 20:50:18" itemprop="dateCreated datePublished" datetime="2022-04-01T20:50:18+08:00">2022-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 18:44:14" itemprop="dateModified" datetime="2022-05-15T18:44:14+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-1操作系统的基本概念"><a href="#1-1操作系统的基本概念" class="headerlink" title="1.1操作系统的基本概念"></a>1.1操作系统的基本概念</h2><h3 id="操作系统的概念"><a href="#操作系统的概念" class="headerlink" title="操作系统的概念"></a>操作系统的概念</h3><p>   1、控制和管理整个计算机系统的硬件和软件资源</p>
+<p>   2、合理地组织、调度计算机的工作与资源</p>
+<p>   3、为用户和其他软件提供方便接口与环境的程序结合</p>
+<p>   计算机系统的层次结构</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo@master/img/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E6%A0%B8.png" alt="操作系统的内核"></p>
+<h3 id="操作系统的特征"><a href="#操作系统的特征" class="headerlink" title="操作系统的特征"></a>操作系统的特征</h3><p>   并发</p>
+<p>   1、两个多个时间在统一时间间隔内发生</p>
+<p>   2、使得系统具有处理和调度多个程序同时执行的能力</p>
+<p>   3、操作系统的并发是通过分时实现</p>
+<p>   注意：并发是在一时间段，并行是指在同一个时刻，并行是指操作系统具有同时执行或操作</p>
+<p>   基本特征：并发、共享、虚拟、异步</p>
+<p>   重要考点</p>
+<p>   1、单核cpu同一时刻只能执行一个程序，各个程序可以并发地执行</p>
+<p>   2、多核cpu同一时刻可以同时执行多个程序，多个程序可以并行地执行</p>
+<p>   共享</p>
+<p>   互斥共享方式</p>
+<p>   1、例如打印机、磁带，同一时刻只能供一个进程对资源访问</p>
+<p>   2、这种资源称作：临界资源或者独占资源</p>
+<p>   同时访问方式</p>
+<p>   1、一段时间内允许多个进程对资源进行访问</p>
+<p>   2、典型代表：磁盘设备，重入码编写的文件</p>
+<p>   虚拟</p>
+<p>   1、一个物理上的实体变为若干逻辑上的对应物，这种技术也成为虚拟技术</p>
+<p>   2、虚拟处理器：采用躲到程序并发的方式，让每个终端用户感觉到有多个处理器（时分复用技术）</p>
+<p>   3、虚拟存储器：将物理存储变为虚拟存储器，逻辑上扩充存储器用量（空分复用技术）</p>
+<p>   4、也可以将一台IO设备虚拟为多台逻辑上的IO设备，并允许每个用户占用一台逻辑上的IO设备</p>
+<p>   异步</p>
+<p>   多道程序走走停停，进程以不可预知的速度向前进</p>
+<h3 id="操作系统的目标和功能"><a href="#操作系统的目标和功能" class="headerlink" title="操作系统的目标和功能"></a>操作系统的目标和功能</h3><p>   1、管理功能</p>
+<p>   1）处理机管理：管理处理器的分配与运行，解决冲突问题，可以理解为对进程的管理 进程管理：进程控制，进程同步，进程通信，死锁处理，处理机调度</p>
+<p>   2）存储器管理：为了提高多道程序运行效率，方便用户使用 内存分配，地址映射，内存保护，共享和内存扩充、</p>
+<p>   3）文件管理：操作系统负责管理文件的系统称为文件系统 文件存储空间的管理，目录管理，文件读写管理和保护</p>
+<p>   4）设备管理：完成用户的IO请求，方便用户使用设备，提高设备的利用率 缓冲管理，设备分配，设备处理，虚拟设备</p>
+<p>   2、接口功能</p>
+<p>   1）命令接口</p>
+<p>   联机控制方式：交互式命令接口，适用于分时或者实时系统，就想人与机器对话一样</p>
+<p>   脱机控制方式：又称批处理系统，提交一组作业，系统进行处理，用户不能干预作业的运行</p>
+<p>   2）程序接口</p>
+<p>   有一组系统调用命令组成（也称作系统调用或者广义指令）</p>
+<p>   例如：图形用户界面（GUI）</p>
+<p>   操作系统用作扩充机器</p>
+<p>   1、操作系统提供了资源管理功能和方便用户使用的各种服务功能，将机器改造为功能更强的机器</p>
+<p>   2、覆盖了软件的机器称为扩充机器，又称为虚拟机</p>
+<p>   封装思想：操作系统把一些丑陋的硬件功能封装成简单易用的服务，使用户能更方便地使用计算机，用户无需关心底层硬件的原理，只需对操作系统发出命令即可</p>
+<h2 id="1-2操作系统的发展与分类"><a href="#1-2操作系统的发展与分类" class="headerlink" title="1.2操作系统的发展与分类"></a>1.2操作系统的发展与分类</h2><h3 id="1、手工操作阶段"><a href="#1、手工操作阶段" class="headerlink" title="1、手工操作阶段"></a>1、手工操作阶段</h3><p>   程序的装入，运行，结果的输出都需要人为的干预</p>
+<p>   缺点：资源利用率低，cpu利用不充分</p>
+<h3 id="2、批处理阶段"><a href="#2、批处理阶段" class="headerlink" title="2、批处理阶段"></a>2、批处理阶段</h3><p>   为了解决人机矛盾以及cpu和IO设备之间速度不匹配的矛盾</p>
+<p>   单道批处理系统</p>
+<p>   内存中始终保存一道作业，作业成批执行</p>
+<p>   特点</p>
+<p>   自动性：一批作业自动执行不需要人工干预</p>
+<p>   顺序性：各道作业依次执行</p>
+<p>   单道性：仅有一道程序执行</p>
+<p>   多道批处理系统</p>
+<p>   允许多个程序在cpu中交替运行，程序共享各种硬件和软件资源</p>
+<p>   特点</p>
+<p>   多道：计算机中同时存放多道相互独立的程序</p>
+<p>   宏观上并行：多道程序都会开始运行，但都没有运行完毕</p>
+<p>   微观上串行：多道程序轮流占用cpu，交替执行</p>
+<p>   优点</p>
+<p>   资源利用率高</p>
+<p>   多道程序并发执行，共享计算机资源</p>
+<p>cpu和其他资源更保持”忙碌”状态，系统吞吐量增大</p>
+<p>   缺点</p>
+<p>   设计复杂，要考虑各种资源调度问题</p>
+<p>   响应时间过长，没有人机交互功能</p>
+<h3 id="分时操作系统"><a href="#分时操作系统" class="headerlink" title="分时操作系统"></a>分时操作系统</h3><p>   将处理器运行时间划分时间片，将时间片分配给不同作业&#x2F;用户从而占用处理机</p>
+<p>   特点</p>
+<p>   1、同时性：允许多个终端用户使用同一台计算机</p>
+<p>   2、交互性：方便进行人机对话，用户采用人机对话方式控制程序运行</p>
+<p>   3、独立性：多个用户彼此之间独立的操作，互不干扰</p>
+<p>   4、及时性：用户请求能在很短时间内获得响应</p>
+<h3 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h3><p>   保证在规定时间内完成某项任务</p>
+<p>   特点</p>
+<pre><code>   1、及时性：规定时间内完成规定任务
+   
+   2、可靠性：输出的结果正确，系统运行时确保稳定
+</code></pre>
+<h3 id="分布式计算机系统"><a href="#分布式计算机系统" class="headerlink" title="分布式计算机系统"></a>分布式计算机系统</h3><p>   网络操作系统将多个计算机有机的结合在一起</p>
+<p>   任意两台计算机之间没有主从之分，互相交换信息，并行工作，协同完成</p>
+<h3 id="个人计算机操作系统"><a href="#个人计算机操作系统" class="headerlink" title="个人计算机操作系统"></a>个人计算机操作系统</h3><p>   广泛应用于文字处理，电子表格，游戏</p>
+<h2 id="1-3操作系统的运行环境"><a href="#1-3操作系统的运行环境" class="headerlink" title="1.3操作系统的运行环境"></a>1.3操作系统的运行环境</h2><p>程序运行：程序运行的过程其实就是cpu执行一条一条的机器指令的过程</p>
+<h3 id="操作系统的运行机制"><a href="#操作系统的运行机制" class="headerlink" title="操作系统的运行机制"></a>操作系统的运行机制</h3><p>cpu的两种性质程序</p>
+<p>   操作系统内核程序</p>
+<p>   用户自编程序</p>
+<p>   内核</p>
+<p>   1、时钟管理：操作系统对用户提供标准时间，根据时钟对进程进行管理，实现进程切换</p>
+<p>   2、中断机制：初衷是为了提高多道程序运行环境中的cpu利用率，保护和恢复中断现场的信息，转移控制权到相关程序</p>
+<p>   原语</p>
+<p>   1、处于系统的最底层，最接近硬件</p>
+<p>   2、运行具有原子性，即只能一气呵成</p>
+<p>   3、系统控制的数据结构及处理</p>
+<p>​     1）进程管理：进程状态管理、进程调度和分派、创建和撤销进程控制</p>
+<p>​     2）存储器管理：存储器的空间分配和回收、内存信息保护程序、代码对换程序</p>
+<p>​     3）设备管理：缓冲区管理、设备分配和回收</p>
+<h3 id="中断与异常"><a href="#中断与异常" class="headerlink" title="中断与异常"></a>中断与异常</h3><p>   为了进行和心态和用户态两种状态的切换，引入了中断机制</p>
+<p>   1、核心态可以执行用户态无法执行的特权指令</p>
+<p>   2、访管指令是在用户态使用，将用户态转换为核心态，所以访管指令不是特权指令</p>
+<p>   “中断”是让操作系统内核夺回cpu使用权的唯一途径</p>
+<p>   中断（外中断）</p>
+<p>   1、来自于cpu指令之外的事件发生</p>
+<p>   2、I&#x2F;O中断：输入输出已经完成</p>
+<p>   3、时钟中断：固定时间片已到，让处理及处理</p>
+<p>   异常（内中断）</p>
+<p>   1、源自于cpu执行指令内部内部的事件</p>
+<p>   2、非法操作码，除零，地址越界，算数溢出</p>
+<p>   3、陷入指令：用户自行设置，执行陷入后，用户态转换为核心态</p>
+<p>   4、异常不能被屏蔽</p>
+<p>   系统调用</p>
+<p>   1、用户在程序中调用操作系统提供的一些子功能</p>
+<p>   2、设备功能：完成设备的请求或者释放，设备启动等功能</p>
+<p>   3、文件管理：完成文件的读、写、创建以及删除功能</p>
+<p>   4、进程控制：完成进程的创建、撤销、阻塞以及唤醒功能</p>
+<p>   5、进程通信：完成进程之间的消息传递和信号传递功能</p>
+<p>   6、内存管理：完成内存的分配、回收以及获取作业占用内存区大小及始址等功能</p>
+<h3 id="用户态与内核态"><a href="#用户态与内核态" class="headerlink" title="用户态与内核态"></a>用户态与内核态</h3><p>cpu中有几个寄存器叫程序状态寄存器（psw） 1为”内核态”，0为”用户态”</p>
+<p>   1、处于内核态时，说明此时正在运行的是内核程序，此时可以执行特权指令</p>
+<p>   2、处于用户态时，说明此时正在运行的是应用程序，此时只能执行非特权指令</p>
+<h3 id="内核态、用户态的切换"><a href="#内核态、用户态的切换" class="headerlink" title="内核态、用户态的切换"></a>内核态、用户态的切换</h3><p>   1、内核态–》用户态：执行一条特权指令——修改psw的标志位为”用户态”，这个动做意味着操作系统将主动让出cpy使用权</p>
+<p>   2、用户态–》内核态：由”中断”引发，硬件自动完成变态过程，出发中断信号意味着操作系统将强行夺回cpu的使用权</p>
+<h2 id="1-4大内核与微内核"><a href="#1-4大内核与微内核" class="headerlink" title="1.4大内核与微内核"></a>1.4大内核与微内核</h2><h3 id="大内核"><a href="#大内核" class="headerlink" title="大内核"></a>大内核</h3><p>   1、将操作系统的主要功能模块进行集中，从而用以提高性能的系统服务</p>
+<p>   2、优点：各个管理模块之间共享信息，能够有效利用相互之间的有效特性，所有有着巨大的性能优势</p>
+<p>   3、缺点：层次交互关系复杂，层次接口难以定义没层次之间界限模糊</p>
+<h3 id="微内核"><a href="#微内核" class="headerlink" title="微内核"></a>微内核</h3><p>   1、背景：随着计算机体系结构的不断发展，操作系统提供的服务越来越多，接口形式越来越复杂</p>
+<p>   2、将内核中最基本的功能保留在内核，将不需要在核心态执行的功能转移到用户执行，降低内核设计的复杂性</p>
+<p>   3、优点：有效的分离内核与服务、服务与服务、使得他们之间的接口更加的清晰，维护的代价大大降低 各部分可以独立的优化和演进</p>
+<p>   4、优点：性能问题，需要频繁的在核心态和用户态之间进行切换</p>
+<h3 id="大内核与微内核"><a href="#大内核与微内核" class="headerlink" title="大内核与微内核"></a>大内核与微内核</h3><p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo@master/img/%E5%A4%A7%E5%86%85%E6%A0%B8%E4%B8%8E%E5%BE%AE%E5%86%85%E6%A0%B8.png" alt="大内核与微内核"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Wjjhui/picodemo/img/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0.png" alt="操作系统的概述"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2022/04/01/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E8%BF%B0/" title="第一章:操作系统的概述">https://wjjhui.github.io/2022/04/01/第一章：操作系统的概述/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/29/%E7%AC%AC%E5%85%AD%E7%AB%A0%EF%BC%9A%E5%BA%94%E7%94%A8%E5%B1%82/" rel="prev" title="第六章:应用层">
+      <i class="fa fa-chevron-left"></i> 第六章:应用层
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/15/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="next" title="第二章:进程管理">
+      第二章:进程管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">1.1操作系统的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">操作系统的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.</span> <span class="nav-text">操作系统的特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%9B%AE%E6%A0%87%E5%92%8C%E5%8A%9F%E8%83%BD"><span class="nav-number">1.3.</span> <span class="nav-text">操作系统的目标和功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%91%E5%B1%95%E4%B8%8E%E5%88%86%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">1.2操作系统的发展与分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%89%8B%E5%B7%A5%E6%93%8D%E4%BD%9C%E9%98%B6%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">1、手工操作阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%89%B9%E5%A4%84%E7%90%86%E9%98%B6%E6%AE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">2、批处理阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%97%B6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.3.</span> <span class="nav-text">分时操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.4.</span> <span class="nav-text">实时操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.5.</span> <span class="nav-text">分布式计算机系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.6.</span> <span class="nav-text">个人计算机操作系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">1.3操作系统的运行环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">操作系统的运行机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E4%B8%8E%E5%BC%82%E5%B8%B8"><span class="nav-number">3.2.</span> <span class="nav-text">中断与异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E4%B8%8E%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">3.3.</span> <span class="nav-text">用户态与内核态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E6%80%81%E3%80%81%E7%94%A8%E6%88%B7%E6%80%81%E7%9A%84%E5%88%87%E6%8D%A2"><span class="nav-number">3.4.</span> <span class="nav-text">内核态、用户态的切换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4%E5%A4%A7%E5%86%85%E6%A0%B8%E4%B8%8E%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="nav-number">4.</span> <span class="nav-text">1.4大内核与微内核</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%86%85%E6%A0%B8"><span class="nav-number">4.1.</span> <span class="nav-text">大内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="nav-number">4.2.</span> <span class="nav-text">微内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%86%85%E6%A0%B8%E4%B8%8E%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="nav-number">4.3.</span> <span class="nav-text">大内核与微内核</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wjjhui"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wjjhui</p>
+  <div class="site-description" itemprop="description">efficiency comes from diligence</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wjjhui" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wjjhui" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wujiahuihui609@gmail.com" title="E-Mail → mailto:wujiahuihui609@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wjjhui</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">108k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
