@@ -20,30 +20,31 @@
     var CONFIG = {"hostname":"wjjhui.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="efficiency comes from diligence">
-<meta property="og:type" content="website">
-<meta property="og:title" content="秃哦鸡">
-<meta property="og:url" content="https://wjjhui.github.io/categories/%E6%9C%BA%E5%99%A8%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="过拟合、欠拟合">
+<meta property="og:url" content="https://wjjhui.github.io/2023/06/05/%E8%BF%87%E6%8B%9F%E5%90%88%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88/index.html">
 <meta property="og:site_name" content="秃哦鸡">
-<meta property="og:description" content="efficiency comes from diligence">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-05T02:25:40.000Z">
+<meta property="article:modified_time" content="2023-06-29T11:37:36.116Z">
 <meta property="article:author" content="wjjhui">
+<meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://wjjhui.github.io/categories/%E6%9C%BA%E5%99%A8%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="https://wjjhui.github.io/2023/06/05/%E8%BF%87%E6%8B%9F%E5%90%88%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
-    sidebar: "",
+    sidebar: "none",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>分类: 机器器学习 | 秃哦鸡</title>
+  <title>过拟合、欠拟合 | 秃哦鸡</title>
   
 
 
@@ -128,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -138,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">27</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">28</span></a>
 
   </li>
         <li class="menu-item menu-item-links">
@@ -172,51 +173,152 @@
         <div class="content-wrap">
           
 
-          <div class="content category">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">机器器学习
-          <small>分类</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wjjhui.github.io/2023/06/05/%E8%BF%87%E6%8B%9F%E5%90%88%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="wjjhui">
+      <meta itemprop="description" content="efficiency comes from diligence">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秃哦鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          过拟合、欠拟合
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-05 10:25:40" itemprop="dateCreated datePublished" datetime="2023-06-05T10:25:40+08:00">2023-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-29 19:37:36" itemprop="dateModified" datetime="2023-06-29T19:37:36+08:00">2023-06-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>577</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+            <div class="post-description"> </div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2023</span>
+        <p><strong>过拟合：</strong>是指我们在训练集上的误差较小，但在测试集上的误差较大；</p>
+<p><strong>欠拟合：</strong>在训练集上的效果就很差。</p>
+<h4 id="一、过拟合"><a href="#一、过拟合" class="headerlink" title="一、过拟合"></a>一、过拟合</h4><h5 id="1、样本问题"><a href="#1、样本问题" class="headerlink" title="1、样本问题"></a><strong>1、样本问题</strong></h5><p><strong>1）样本量太少：</strong><br>样本量太少可能会使得我们选取的样本不具有代表性，从而将这些样本独有的性质当作一般性质来建模，就会导致模型在测试集上效果很差；</p>
+<p><strong>2）训练集、测试集分布不一致：</strong></p>
+<p>对于数据集的划分没有考虑业务场景，有可能造成我们的训练、测试样本的分布不同，就会出现在训练集上效果好，在测试集上效果差的现象；</p>
+<p><strong>3）样本噪声干扰大：</strong><br>如果数据的声音较大，就会导致模型拟合这些噪声，增加了模型复杂度；</p>
+<h5 id="2、模型问题"><a href="#2、模型问题" class="headerlink" title="2、模型问题"></a><strong>2、模型问题</strong></h5><p>1）参数太多，模型过于复杂，对于树模型来说，比如：决策树深度较大等。</p>
+<h5 id="3、解决方法"><a href="#3、解决方法" class="headerlink" title="3、解决方法"></a><strong>3、解决方法</strong></h5><p><strong>1）增加样本量：</strong></p>
+<p>样本量越大，过拟合的概率就越小（不过有的由于业务受限，样本量增加难以实现）；</p>
+<p><strong>2）减少特征：</strong></p>
+<p>减少冗余特征；</p>
+<p><strong>3）加入正则项：</strong></p>
+<p>损失函数中加入正则项，惩罚模型的参数，降低模型的复杂度（树模型可以控制深度等）；</p>
+<p><strong>4）集成学习：</strong></p>
+<p>练多个模型，将模型的平均结果作为输出，这样可以弱化每个模型的异常数据影响。</p>
+<h4 id="二、欠拟合"><a href="#二、欠拟合" class="headerlink" title="二、欠拟合"></a>二、欠拟合</h4><p><strong>欠拟合主要是由于学习不足造成的，那么我们可以通过以下方法解决此问题</strong></p>
+<h5 id="1、增加特征"><a href="#1、增加特征" class="headerlink" title="1、增加特征"></a><strong>1、增加特征</strong></h5><p>增加新的特征，或者衍生特征（对特征进行变换，特征组合）</p>
+<h5 id="2、使用较复杂的模型，或者减少正则项"><a href="#2、使用较复杂的模型，或者减少正则项" class="headerlink" title="2、使用较复杂的模型，或者减少正则项"></a><strong>2、使用较复杂的模型，或者减少正则项</strong></h5><p><strong>其次讨论过拟合，为什么我们的模型会过拟合呢？这里，我总结了一下，将其原因分成两大类：</strong></p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
+        
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2023-06-05T10:25:40+08:00"
-              content="2023-06-05">
-          06-05
-        </time>
-      </div>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wjjhui
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wjjhui.github.io/2023/06/05/%E8%BF%87%E6%8B%9F%E5%90%88%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88/" title="过拟合、欠拟合">https://wjjhui.github.io/2023/06/05/过拟合、欠拟合/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/06/05/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%90%B4%E6%81%A9%E8%BE%BE/" itemprop="url">
-            <span itemprop="name">机器学习吴恩达</span>
-          </a>
-      </div>
 
-    </header>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/03/%E7%AC%AC%E5%85%AB%E7%AB%A0%EF%BC%9A%E6%8E%92%E5%BA%8F/" rel="prev" title="第八章:排序">
+      <i class="fa fa-chevron-left"></i> 第八章:排序
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/06/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="next" title="深度学习记录">
+      深度学习记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -269,6 +371,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">1.</span> <span class="nav-text">一、过拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E3%80%81%E6%A0%B7%E6%9C%AC%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">1、样本问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2%E3%80%81%E6%A8%A1%E5%9E%8B%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">2、模型问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3%E3%80%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">3、解决方法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88"><span class="nav-number">2.</span> <span class="nav-text">二、欠拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E3%80%81%E5%A2%9E%E5%8A%A0%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text">1、增加特征</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2%E3%80%81%E4%BD%BF%E7%94%A8%E8%BE%83%E5%A4%8D%E6%9D%82%E7%9A%84%E6%A8%A1%E5%9E%8B%EF%BC%8C%E6%88%96%E8%80%85%E5%87%8F%E5%B0%91%E6%AD%A3%E5%88%99%E9%A1%B9"><span class="nav-number">2.2.</span> <span class="nav-text">2、使用较复杂的模型，或者减少正则项</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -284,7 +387,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -297,7 +400,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -344,12 +447,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">108k</span>
+    <span title="站点总字数">109k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:39</span>
+    <span title="站点阅读时长">1:40</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
